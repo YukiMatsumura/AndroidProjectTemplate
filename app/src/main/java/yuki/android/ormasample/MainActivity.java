@@ -1,4 +1,4 @@
-package yuki.android.ormasample.presentation.view;
+package yuki.android.ormasample;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;

@@ -6,8 +6,7 @@ import org.junit.rules.ExternalResource;
 import org.robolectric.shadows.ShadowLog;
 
 /**
- * Robolectricテスト用のRule.
- * テスト実行前に下記の共通処理を実施する.
+ * Robolectricテスト用のRule. テスト実行前に下記の共通処理を実施する.
  * - ログ出力をSystem.outに繋ぐ
  * - StrictModeを無効にする
  */

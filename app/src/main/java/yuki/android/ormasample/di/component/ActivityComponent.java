@@ -8,8 +8,8 @@ import yuki.android.ormasample.di.scope.PerActivity;
 
 @PerActivity
 @Component(dependencies = ApplicationComponent.class,
-    modules = ActivityModule.class)
+        modules = ActivityModule.class)
 public interface ActivityComponent {
 
-  void inject(Activity activity);
+    void inject(Activity activity);
 }

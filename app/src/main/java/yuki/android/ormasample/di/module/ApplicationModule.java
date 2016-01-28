@@ -6,9 +6,9 @@ import yuki.android.ormasample.App;
 @Module
 public class ApplicationModule {
 
-  private final App app;
+    private final App app;
 
-  public ApplicationModule(App app) {
-    this.app = app;
-  }
+    public ApplicationModule(App app) {
+        this.app = app;
+    }
 }

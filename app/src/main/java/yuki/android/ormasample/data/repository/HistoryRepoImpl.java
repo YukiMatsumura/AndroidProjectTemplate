@@ -10,17 +10,18 @@ import yuki.android.ormasample.domain.repository.HistoryRepo;
 
 public class HistoryRepoImpl implements HistoryRepo {
 
-  @Inject OrmaDatabase orma;
+    @Inject
+    OrmaDatabase orma;
 
-  @Inject
-  public HistoryRepoImpl(OrmaDatabase orma) {
-    if (orma == null) {
-      throw new NullPointerException("OrmaDatabase was injected null. DI is unstable.");
+    @Inject
+    public HistoryRepoImpl(OrmaDatabase orma) {
+        if (orma == null) {
+            throw new NullPointerException("OrmaDatabase was injected null. DI is unstable.");
+        }
+        this.orma = orma;
     }
-    this.orma = orma;
-  }
 
-  public List<History> findAll() {
-    return orma.selectFromHistory().toList();
-  }
+    public List<History> findAll() {
+        return orma.selectFromHistory().toList();
+    }
 }

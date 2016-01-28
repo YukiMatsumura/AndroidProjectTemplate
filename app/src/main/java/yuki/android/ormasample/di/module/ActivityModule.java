@@ -9,13 +9,15 @@ import yuki.android.ormasample.di.scope.PerActivity;
 @Module
 public class ActivityModule {
 
-  private final Activity activity;
+    private final Activity activity;
 
-  public ActivityModule(Activity activity) {
-    this.activity = activity;
-  }
+    public ActivityModule(Activity activity) {
+        this.activity = activity;
+    }
 
-  @Provides @PerActivity Activity provideActivity() {
-    return this.activity;
-  }
+    @Provides
+    @PerActivity
+    Activity provideActivity() {
+        return this.activity;
+    }
 }

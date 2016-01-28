@@ -11,5 +11,5 @@ import yuki.android.ormasample.di.module.RepositoryModule;
 @Component(modules = {ApplicationModule.class, RepositoryModule.class})
 public interface ApplicationComponent {
 
-  void inject(App app);
+    void inject(App app);
 }

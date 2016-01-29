@@ -1,15 +1,17 @@
 package yuki.android.ormasample.di.module;
 
-import dagger.Module;
-//import yuki.android.ormasample.data.entity.OrmaDatabase;
-//import yuki.android.ormasample.data.repository.HistoryRepoImpl;
-//import yuki.android.ormasample.domain.repository.HistoryRepo;
+import javax.inject.Singleton;
 
-@Module
+import dagger.Module;
+import dagger.Provides;
+import yuki.android.ormasample.domain.repository.HistoryRepo;
+
+@Module(includes = RepositoryModule.class)
 public class HistoryModule {
 
-//  @Provides @Singleton
-//  public HistoryRepo provideHistoryRepo(OrmaDatabase db) {
-//    return new HistoryRepoImpl(db);
-//  }
+    @Provides
+    @Singleton
+    public HistoryRepo provideHistoryRepo(HistoryRepo repo) {
+        return repo;
+    }
 }

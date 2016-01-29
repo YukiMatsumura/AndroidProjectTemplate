@@ -22,6 +22,25 @@ public class HistoryRepoImpl implements HistoryRepo {
     }
 
     public List<History> findAll() {
-        return orma.selectFromHistory().toList();
+        return orma.selectFromHistory()
+                .toList();
+    }
+
+    public long insertAt(History history) {
+        return orma.insertIntoHistory(history);
+    }
+
+    public int updateAt(long id, History history) {
+        return orma.updateHistory()
+                .idEq(id)
+                .date(history.date)
+                .label(history.label)
+                .execute();
+    }
+
+    public int deleteAt(long id) {
+        return orma.deleteFromHistory()
+                .idEq(id)
+                .execute();
     }
 }

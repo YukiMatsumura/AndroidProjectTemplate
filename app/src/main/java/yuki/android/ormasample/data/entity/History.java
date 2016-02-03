@@ -14,8 +14,8 @@ public class History {
     @PrimaryKey
     public long id;
 
-    @Column
-    public long date;
+    @Column(indexed = true)
+    public long activeDate;
 
     @Column
     @Nullable
@@ -26,8 +26,8 @@ public class History {
         return this;
     }
 
-    public History setDate(long date) {
-        this.date = date;
+    public History setActiveDate(long activeDate) {
+        this.activeDate = activeDate;
         return this;
     }
 
@@ -40,6 +40,6 @@ public class History {
     public String toString() {
         return String.format(Locale.US,
                 "History {ID:%s, DATE:%tF %tT, LABEL:%s} (@%s)",
-                id, date, date, label, this.hashCode());
+                id, activeDate, activeDate, label, this.hashCode());
     }
 }

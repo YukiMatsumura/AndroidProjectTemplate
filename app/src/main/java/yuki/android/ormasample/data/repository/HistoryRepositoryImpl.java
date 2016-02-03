@@ -24,8 +24,8 @@ public class HistoryRepositoryImpl implements HistoryRepository {
 
     public List<History> findLatestHistory(long startDate, long endDate) {
         return orma.selectFromHistory()
-                .activeDateLe(startDate)
-                .activeDateGe(endDate)
+                .activeDateGe(startDate)
+                .activeDateLe(endDate)
                 .toList();
     }
 }

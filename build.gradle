@@ -20,3 +20,8 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+task fetchCodeStyle(type: Exec) {
+    workingDir './'
+    executable "./script/attachCodeStyle.sh"
+}

@@ -25,7 +25,6 @@ public class TestDateUtils {
      */
     public static final long YEAR_2400;
 
-
     static {
         Calendar calendar = Calendar.getInstance(Locale.JAPAN);
 

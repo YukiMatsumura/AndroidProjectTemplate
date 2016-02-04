@@ -1,9 +1,15 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
+// generic method io logger
+apply plugin: 'com.jakewharton.hugo'
+
+// ReactiveX observable logger
+apply plugin: 'com.fernandocejas.frodo'
+
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.0"
 
     defaultConfig {
         applicationId "yuki.android.ormasample"
@@ -33,12 +39,18 @@ android {
     lintOptions {
         abortOnError false
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
     packagingOptions {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
+    }
+    configurations.all {
+        resolutionStrategy.force 'com.android.support:support-annotations:23.1.1'
     }
 }
 
@@ -51,6 +63,12 @@ dependencies {
 
     // apt.
     provided 'javax.annotation:javax.annotation-api:1.2'
+
+    // ReactiveX.
+    compile 'io.reactivex:rxandroid:1.1.0'
+    // Because RxAndroid releases are few and far between, it is recommended you also
+    // explicitly depend on RxJava's latest version for bug fixes and new features.
+    compile 'io.reactivex:rxjava:1.1.0'
 
     // Logger
     compile 'com.jakewharton.timber:timber:4.1.0'
@@ -73,4 +91,15 @@ dependencies {
 
     // Unit testing. Robolectric
     testCompile "org.robolectric:robolectric:3.0"
+    testCompile 'junit:junit:4.12'
+
+    // Set this dependency to use JUnit 4 rules
+    androidTestCompile 'com.android.support.test:runner:0.4'
+    androidTestCompile 'com.android.support.test:rules:0.4'
 }
+
+// メソッドのIOをロギングするHugoライブラリをdebugビルドでもOFFにしたい場合は
+// 下記のコメントアウトを外す. https://github.com/JakeWharton/hugo
+//hugo {
+//    enabled false
+//}

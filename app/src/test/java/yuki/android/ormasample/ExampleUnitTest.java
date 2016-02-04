@@ -1,16 +1,21 @@
 package yuki.android.ormasample;
 
+import com.fernandocejas.frodo.annotation.RxLogObservable;
+
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import rx.Observable;
 
-/**
- * To work on unit tests, switch the Test Artifact in the Build Variants view.
- */
+
 public class ExampleUnitTest {
 
     @Test
     public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+        hoge().subscribe();
+    }
+
+    @RxLogObservable
+    private Observable<Integer> hoge() {
+        return Observable.range(0, 3);
     }
 }

@@ -39,7 +39,7 @@ public class History {
     @Override
     public String toString() {
         return String.format(Locale.US,
-                "History {ID:%s, DATE:%tF %tT, LABEL:%s} (@%s)",
+                "History {id:%s, date:%tF %tT, label:%s} (@%s)",
                 id, activeDate, activeDate, label, this.hashCode());
     }
 }

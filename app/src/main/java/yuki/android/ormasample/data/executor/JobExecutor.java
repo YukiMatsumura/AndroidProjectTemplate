@@ -7,15 +7,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import yuki.android.ormasample.domain.executor.ThreadExecutor;
 
 /**
  * Decorated {@link java.util.concurrent.ThreadPoolExecutor}
  */
-@Singleton
 public class JobExecutor implements ThreadExecutor {
 
     private static final int INITIAL_POOL_SIZE = 3;
@@ -34,7 +30,6 @@ public class JobExecutor implements ThreadExecutor {
 
     private final ThreadFactory threadFactory;
 
-    @Inject
     public JobExecutor() {
         this.workQueue = new LinkedBlockingQueue<>();
         this.threadFactory = new JobThreadFactory();

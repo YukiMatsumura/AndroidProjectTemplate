@@ -15,8 +15,8 @@ public class DefaultRobolectricRule extends ExternalResource {
     private static final StrictMode.ThreadPolicy ROBOLECTRIC_THREAD_POLICY;
 
     static {
+        // UnitTestではUI Threadなどのポリシーは適用外であるため下記を設定.
         ROBOLECTRIC_THREAD_POLICY = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        // VmPolicyは設定不要と思われる.
     }
 
     @Override

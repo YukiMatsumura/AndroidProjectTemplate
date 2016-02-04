@@ -1,6 +1,7 @@
 package yuki.android.ormasample.domain.executor;
 
-public interface ThreadExecutor {
+import java.util.concurrent.Executor;
 
-    void execute(final Runnable runnable);
+public interface ThreadExecutor extends Executor {
+
 }

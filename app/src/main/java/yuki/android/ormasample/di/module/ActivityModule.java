@@ -4,8 +4,8 @@ import android.app.Activity;
 
 import dagger.Module;
 import dagger.Provides;
-import yuki.android.ormasample.data.executor.JobExecutor;
-import yuki.android.ormasample.di.scope.PerActivity;
+import yuki.android.ormasample.di.scope.ActivityScope;
+import yuki.android.ormasample.domain.executor.PostExecutionThread;
 import yuki.android.ormasample.domain.executor.ThreadExecutor;
 import yuki.android.ormasample.domain.repository.HistoryRepository;
 import yuki.android.ormasample.domain.usecase.HistoryViewUseCase;
@@ -20,21 +20,16 @@ public class ActivityModule {
         this.activity = activity;
     }
 
-    @PerActivity
     @Provides
+    @ActivityScope
     Activity provideActivity() {
         return this.activity;
     }
 
-    @PerActivity
     @Provides
-    ThreadExecutor provideThreadExecutor() {
-        return new JobExecutor();
-    }
-
-    @PerActivity
-    @Provides
-    HistoryViewUseCase provideHistoryViewUseCase(HistoryRepository repository, ThreadExecutor executor) {
-        return new HistoryViewUseCaseImpl(repository, executor);
+    @ActivityScope
+    HistoryViewUseCase provideHistoryViewUseCase(HistoryRepository repository,
+            ThreadExecutor executor, PostExecutionThread postExecutionThread) {
+        return new HistoryViewUseCaseImpl(repository, executor, postExecutionThread);
     }
 }

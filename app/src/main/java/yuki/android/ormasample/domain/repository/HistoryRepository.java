@@ -1,10 +1,11 @@
 package yuki.android.ormasample.domain.repository;
 
-import java.util.List;
-
+import rx.Observable;
 import yuki.android.ormasample.data.entity.History;
 
 public interface HistoryRepository {
 
-    List<History> findLatestHistory(long startDate, long endDate);
+    Observable<History> findLatestHistory(long startDate, long endDate);
+
+    Observable<Integer> countHistory();
 }

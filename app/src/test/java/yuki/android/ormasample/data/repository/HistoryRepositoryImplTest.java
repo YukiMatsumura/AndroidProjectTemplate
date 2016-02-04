@@ -41,8 +41,8 @@ public class HistoryRepositoryImplTest {
         orma = TestOrmaUtils.getDatabase(context);
     }
 
-    @Test //(expected = NullPointerException.class)
-    public void DI引数_NULL() throws Exception {
+    @Test
+    public void 期間指定検索() throws Exception {
         orma.insertIntoHistory(
                 new History().setLabel("Test01").setActiveDate(TestDateUtils.YEAR_2016));
         orma.insertIntoHistory(
@@ -52,7 +52,7 @@ public class HistoryRepositoryImplTest {
 
         HistoryRepositoryImpl repository = new HistoryRepositoryImpl(orma);
         List<History> result = repository.findLatestHistory(
-                TestDateUtils.YEAR_2016, TestDateUtils.YEAR_2017);
+                TestDateUtils.YEAR_2016, TestDateUtils.YEAR_2017).toList().toBlocking().single();
 
         assertThat("期間指定検索の結果が期待する件数と異なる", result.size(), is(2));
         for (History history : result) {

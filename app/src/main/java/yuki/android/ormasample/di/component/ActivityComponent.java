@@ -6,7 +6,6 @@ import dagger.Component;
 import yuki.android.ormasample.data.entity.OrmaDatabase;
 import yuki.android.ormasample.di.module.ActivityModule;
 import yuki.android.ormasample.di.scope.ActivityScope;
-import yuki.android.ormasample.domain.executor.ThreadExecutor;
 import yuki.android.ormasample.domain.usecase.HistoryViewUseCase;
 import yuki.android.ormasample.presentation.presenter.HistoryViewPresenter;
 import yuki.android.ormasample.presentation.view.HistoryViewActivity;

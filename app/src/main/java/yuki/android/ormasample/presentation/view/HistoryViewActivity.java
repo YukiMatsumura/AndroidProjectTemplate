@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import java.util.List;
@@ -47,6 +48,8 @@ public class HistoryViewActivity extends AppCompatActivity {
     @Bind(R.id.view_history_list)
     RecyclerView recyclerView;
 
+    private ItemTouchHelper itemTouchHelper;
+
     @NonNull
     public ActivityComponent getComponent() {
         if (activityComponent == null) {
@@ -75,6 +78,9 @@ public class HistoryViewActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         presenter.create(this);
+
+        itemTouchHelper = new ItemTouchHelper(new HistoryItemTouchListener(presenter));
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -105,8 +111,33 @@ public class HistoryViewActivity extends AppCompatActivity {
         Snackbar.make(rootView, "History total count is " + count, Snackbar.LENGTH_LONG).show();
     }
 
+    public void onRemovedHistory(long itemId) {
+        int position = recyclerView.findViewHolderForItemId(itemId).getAdapterPosition();
+        listAdapter.removeItem(position);
+    }
+
     @OnClick(R.id.view_fab)
     public void onClick(FloatingActionButton fab) {
 
+    }
+
+    private static class HistoryItemTouchListener extends ItemTouchHelper.SimpleCallback {
+
+        private HistoryViewPresenter presenter;
+
+        public HistoryItemTouchListener(HistoryViewPresenter presenter) {
+            super(0 /* Drag */, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT /* Swipe */);
+            this.presenter = presenter;
+        }
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            this.presenter.removeHistoryItem(viewHolder.getItemId());
+        }
     }
 }

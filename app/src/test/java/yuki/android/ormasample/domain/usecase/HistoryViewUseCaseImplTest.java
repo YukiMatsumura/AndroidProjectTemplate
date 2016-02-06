@@ -62,7 +62,7 @@ public class HistoryViewUseCaseImplTest {
         final List<History> expect = Arrays.asList(
                 new History().setId(1L).setLabel("Test1").setActiveDate(1234L),
                 new History().setId(2L).setLabel("Test2").setActiveDate(6789L));
-        when(historyRepository.findLatestHistory(anyLong(), anyLong())).thenReturn(Observable.from(expect));
+        when(historyRepository.findBetween(anyLong(), anyLong())).thenReturn(Observable.from(expect));
 
         HistoryViewUseCase useCase = new HistoryViewUseCaseImpl(
                 historyRepository,

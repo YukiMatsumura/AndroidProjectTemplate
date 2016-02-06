@@ -1,5 +1,8 @@
 package yuki.android.ormasample.domain.executor;
 
+import com.fernandocejas.frodo.annotation.RxLogSubscriber;
+
+@RxLogSubscriber
 public class DefaultSubscriber<T> extends rx.Subscriber<T> {
 
     @Override

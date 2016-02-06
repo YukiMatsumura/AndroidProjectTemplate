@@ -31,4 +31,6 @@ public class HistoryItemView extends RecyclerView.ViewHolder {
         }
         textView.setText(history.label);
     }
+
+
 }

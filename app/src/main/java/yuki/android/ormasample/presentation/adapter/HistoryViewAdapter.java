@@ -17,6 +17,7 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<HistoryItemView> {
 
     public HistoryViewAdapter() {
         setHistory(null);
+        setHasStableIds(true);
     }
 
     public void setHistory(List<History> histories) {
@@ -42,5 +43,15 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<HistoryItemView> {
     @Override
     public int getItemCount() {
         return histories.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return histories.get(position).id;
+    }
+
+    public void removeItem(int position) {
+        histories.remove(position);
+        notifyItemRemoved(position);
     }
 }

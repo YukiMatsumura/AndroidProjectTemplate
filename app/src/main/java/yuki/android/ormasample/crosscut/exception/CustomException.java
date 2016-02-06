@@ -1,4 +1,4 @@
-package yuki.android.ormasample.crosscut;
+package yuki.android.ormasample.crosscut.exception;
 
 public abstract class CustomException extends Exception {
 

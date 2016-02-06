@@ -17,9 +17,15 @@ public class DateTime {
      */
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({FIELD_YEAR, FIELD_MONTH, FIELD_DAY})
-    public @interface CALENDAR_FIELD {
+    public @interface CalendarField {
 
     }
+
+    public static final int FIELD_YEAR = Calendar.YEAR;
+
+    public static final int FIELD_MONTH = Calendar.MONTH;
+
+    public static final int FIELD_DAY = Calendar.DATE;
 
     public static class Clock {
 
@@ -34,12 +40,6 @@ public class DateTime {
     }
 
     private static Clock clock = new Clock();
-
-    public static final int FIELD_YEAR = Calendar.YEAR;
-
-    public static final int FIELD_MONTH = Calendar.MONTH;
-
-    public static final int FIELD_DAY = Calendar.DATE;
 
     public static long now() {
         return clock.now();
@@ -66,11 +66,11 @@ public class DateTime {
      * baseMilliseconds の時間に value で指定された時間を加えたepoch値(UTC)を返す.
      *
      * @param baseMilliseconds 時間を加える基準時間.
-     * @param field            加える時間の種別(年, 月, 日). {@link CALENDAR_FIELD}から指定される.
+     * @param field            加える時間の種別(年, 月, 日). {@link CalendarField}から指定される.
      * @param value            加える時間の量. 1以上である必要がある.
      * @return baseMilliseconds に value で指定された時間を加えたepoch値(UTC)
      */
-    public static long plus(long baseMilliseconds, @IntRange(from = 1) int value, @CALENDAR_FIELD int field) {
+    public static long plus(long baseMilliseconds, @IntRange(from = 1) int value, @CalendarField int field) {
         return add(baseMilliseconds, value, field);
     }
 
@@ -78,15 +78,15 @@ public class DateTime {
      * baseMilliseconds の時間に value で指定された時間を減じたepoch値(UTC)を返す.
      *
      * @param baseMilliseconds 時間を加える基準時間.
-     * @param field            減じる時間の種別(年, 月, 日). {@link CALENDAR_FIELD}から指定される.
+     * @param field            減じる時間の種別(年, 月, 日). {@link CalendarField}から指定される.
      * @param value            減じる時間の量. -1以下である必要がある.
      * @return baseMilliseconds に value で指定された時間を減じたepoch値(UTC)
      */
-    public static long minus(long baseMilliseconds, @IntRange(to = -1) int value, @CALENDAR_FIELD int field) {
+    public static long minus(long baseMilliseconds, @IntRange(to = -1) int value, @CalendarField int field) {
         return add(baseMilliseconds, value, field);
     }
 
-    private static long add(long baseMilliseconds, int value, @CALENDAR_FIELD int field) {
+    private static long add(long baseMilliseconds, int value, @CalendarField int field) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(baseMilliseconds);
         cal.add(field, value);

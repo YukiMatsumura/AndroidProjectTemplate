@@ -11,8 +11,10 @@ import org.robolectric.annotation.Config;
 import android.content.Context;
 import android.test.suitebuilder.annotation.MediumTest;
 
+import java.util.Collections;
 import java.util.List;
 
+import rx.functions.Action1;
 import yuki.android.ormasample.data.entity.History;
 import yuki.android.ormasample.data.entity.OrmaDatabase;
 import yuki.android.ormasample.test.CustomRobolectricTestRunner;
@@ -36,9 +38,15 @@ public class HistoryRepositoryImplTest {
 
     private OrmaDatabase orma;
 
+    private HistoryRepositoryImpl repository;
+
     @Before
     public void setup() {
         orma = TestOrmaUtils.getDatabase(context);
+        repository = new HistoryRepositoryImpl(orma);
+
+        // テスト前にすべてのHistoryレコードを消去する
+        repository.deleteAll();
     }
 
     @Test
@@ -50,8 +58,7 @@ public class HistoryRepositoryImplTest {
         orma.insertIntoHistory(
                 new History().setLabel("Test02").setActiveDate(TestDateUtils.YEAR_2100));
 
-        HistoryRepositoryImpl repository = new HistoryRepositoryImpl(orma);
-        List<History> result = repository.findLatestHistory(
+        List<History> result = repository.findBetween(
                 TestDateUtils.YEAR_2016, TestDateUtils.YEAR_2017).toList().toBlocking().single();
 
         assertThat("期間指定検索の結果が期待する件数と異なる", result.size(), is(2));
@@ -64,4 +71,22 @@ public class HistoryRepositoryImplTest {
         }
     }
 
+    @Test
+    public void ヒストリの追加() throws Exception {
+        repository.insert(Collections.singletonList(
+                new History().setLabel("Test1").setActiveDate(123456789L)))
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long rowId) {
+                        assertThat("1件のHistory追加でrowIdが1(開始値)以外のものが追加された", rowId, is(1L));
+                        History history = repository.findById(rowId)
+                                .toBlocking()
+                                .value();
+                        assertThat("追加されたレコードのlabelがリクエスト時から編集されている",
+                                history.label, equalTo("Test1"));
+                        assertThat("追加されたレコードのactiveDateがリクエスト時から編集されている",
+                                history.activeDate, equalTo(123456789L));
+                    }
+                });
+    }
 }

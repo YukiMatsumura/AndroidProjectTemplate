@@ -38,15 +38,15 @@ public class HistoryRepositoryImplTest {
 
     private OrmaDatabase orma;
 
-    private HistoryRepositoryImpl repository;
+    private HistoryRepositoryImpl historyRepo;
 
     @Before
     public void setup() {
         orma = TestOrmaUtils.getDatabase(context);
-        repository = new HistoryRepositoryImpl(orma);
+        historyRepo = new HistoryRepositoryImpl(orma);
 
         // テスト前にすべてのHistoryレコードを消去する
-        repository.deleteAll();
+        historyRepo.deleteAll();
     }
 
     @Test
@@ -56,9 +56,9 @@ public class HistoryRepositoryImplTest {
         orma.insertIntoHistory(
                 new History().setLabel("Test02").setActiveDate(TestDateUtils.YEAR_2017));
         orma.insertIntoHistory(
-                new History().setLabel("Test02").setActiveDate(TestDateUtils.YEAR_2100));
+                new History().setLabel("Test03").setActiveDate(TestDateUtils.YEAR_2100));
 
-        List<History> result = repository.findBetween(
+        List<History> result = historyRepo.findBetween(
                 TestDateUtils.YEAR_2016, TestDateUtils.YEAR_2017).toList().toBlocking().single();
 
         assertThat("期間指定検索の結果が期待する件数と異なる", result.size(), is(2));
@@ -73,13 +73,13 @@ public class HistoryRepositoryImplTest {
 
     @Test
     public void ヒストリの追加() throws Exception {
-        repository.insert(Collections.singletonList(
+        historyRepo.insert(Collections.singletonList(
                 new History().setLabel("Test1").setActiveDate(123456789L)))
                 .subscribe(new Action1<Long>() {
                     @Override
                     public void call(Long rowId) {
                         assertThat("1件のHistory追加でrowIdが1(開始値)以外のものが追加された", rowId, is(1L));
-                        History history = repository.findById(rowId)
+                        History history = historyRepo.findById(rowId)
                                 .toBlocking()
                                 .value();
                         assertThat("追加されたレコードのlabelがリクエスト時から編集されている",

@@ -8,22 +8,36 @@ apply plugin: 'com.jakewharton.hugo'
 apply plugin: 'com.fernandocejas.frodo'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion = rootProject.ext.compileSdkVersion
+    buildToolsVersion = rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "yuki.android.ormasample"
-        minSdkVersion 15
-        targetSdkVersion 23
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    productFlavors {
+        // Define separate dev and prod product flavors.
+        // http://developer.android.com/intl/ja/tools/building/multidex.html#dev-build
+        dev {
+            // dev utilizes minSDKVersion = 21 to allow the Android gradle plugin
+            // to pre-dex each module and produce an APK that can be tested on
+            // Android Lollipop without time consuming dex merging processes.
+            minSdkVersion 21
+        }
+        pro {
+            // The actual minSdkVersion for the application.
+            minSdkVersion rootProject.ext.minSdkVersion
+        }
+    }
     buildTypes {
         debug {
             debuggable true
-            minifyEnabled false
+            minifyEnabled true
             testCoverageEnabled true
         }
         release {
@@ -49,18 +63,37 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
     }
+    
+    // ビルド高速化
+    // DEXプロセスを分離プロセスではなく, 同Gradleプロセス上で実施することでビルドを高速化する.
+    // 副作用としてJVMのメモリを大量に消費するため, メモリ確保ができない場合はこれをコメントアウトすること. 
+    // http://stackoverflow.com/questions/35224255/to-run-dex-in-process-the-gradle-daemon-needs-a-larger-heap-it-currently-has-9
+    dexOptions {
+        // DexOptions API: http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.DexOptions.html
+        javaMaxHeapSize "4g"
+        dexInProcess = true
+    }
+
+    // ライブラリ間の依存性解決 
+    // https://sites.google.com/a/android.com/tools/tech-docs/new-build-system/user-guide#TOC-Resolving-conflicts-between-main-and-test-APK
+    // 
+    // configurations.allはcode inspectionが報告されるため下記のコメントをつける. 
+    // see https://youtrack.jetbrains.com/issue/IDEA-141744
+    // noinspection GroovyAssignabilityCheck
     configurations.all {
-        resolutionStrategy.force 'com.android.support:support-annotations:23.1.1'
+        resolutionStrategy.force "com.android.support:support-annotations:${supportPackageVersion}"
     }
 }
 
+//noinspection GroovyAssignabilityCheck
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     // Support lib.
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
-
+    compile "com.android.support:appcompat-v7:${supportPackageVersion}"
+    compile "com.android.support:design:${supportPackageVersion}"
+    compile "com.android.support:support-annotations:${supportPackageVersion}"
+    
     // apt.
     provided 'javax.annotation:javax.annotation-api:1.2'
 
@@ -93,9 +126,9 @@ dependencies {
     testCompile "org.robolectric:robolectric:3.0"
     testCompile 'junit:junit:4.12'
 
-    // Set this dependency to use JUnit 4 rules
-    androidTestCompile 'com.android.support.test:runner:0.4'
-    androidTestCompile 'com.android.support.test:rules:0.4'
+    // android Testing support lib.
+    androidTestCompile "com.android.support.test:runner:${testingSupportPackageVersion}"
+    androidTestCompile "com.android.support.test:rules:${testingSupportPackageVersion}"
 }
 
 // メソッドのIOをロギングするHugoライブラリをdebugビルドでもOFFにしたい場合は

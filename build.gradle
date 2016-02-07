@@ -23,12 +23,44 @@ allprojects {
     repositories {
         jcenter()
     }
+
+    // ビルド高速化
+    // CIサーバでは常にCleanな状態からビルドが実施されるため, 2回目以降のビルドを高速化する
+    // PreDexLibraryのプロセスに意味がない. 下記はCIサーバでPreDexLibraryを無効にする.
+    // see http://tools.android.com/tech-docs/new-build-system/tips#TOC-Improving-Build-Server-performance.
+    project.plugins.whenPluginAdded { plugin ->
+        if ("com.android.build.gradle.AppPlugin".equals(plugin.class.name)) {
+            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+        } else if ("com.android.build.gradle.LibraryPlugin".equals(plugin.class.name)) {
+            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+        }
+    }
+}
+
+// http://www.gradle.org/docs/current/dsl/org.gradle.api.plugins.ExtraPropertiesExtension.html
+project.ext {
+    compileSdkVersion = 23
+    minSdkVersion = 15
+    targetSdkVersion = 23
+    buildToolsVersion = '23.0.2'
+
+    // ビルド高速化
+    // CIサーバでは常にCleanな状態からビルドが実施されるため, 2回目以降のビルドを高速化する
+    // PreDexLibraryのプロセスに意味がない. 
+    // CIサーバでビルドを行う際には -PdisablePreDex 引数をつけることでPreDexLibraryをskipできる. 
+    // see http://tools.android.com/tech-docs/new-build-system/tips#TOC-Improving-Build-Server-performance.
+    preDexLibs = !project.hasProperty('disablePreDex')
+
+    supportPackageVersion = '23.1.1'
+    testingSupportPackageVersion = '0.4'
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+// プロジェクトのJava code style用設定ファイルをダウンロードする. 
+// AndroidStudioのCodeStyle設定ファイルをGitHubからDLするスクリプトを実行する.
 task fetchCodeStyle(type: Exec) {
     workingDir './'
     executable "./script/attachCodeStyle.sh"

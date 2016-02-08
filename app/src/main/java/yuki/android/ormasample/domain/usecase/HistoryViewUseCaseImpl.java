@@ -1,5 +1,6 @@
 package yuki.android.ormasample.domain.usecase;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.SingleSubscriber;
@@ -58,6 +59,17 @@ public class HistoryViewUseCaseImpl implements HistoryViewUseCase {
     @Override
     public void removeHistory(long rowId, SingleSubscriber<Integer> subscriber) {
         historyRepository.deleteById(rowId)
+                .subscribeOn(Schedulers.from(executor))
+                .observeOn(postThread.getScheduler())
+                .subscribe(subscriber);
+    }
+
+    @Override
+    public void addHistory(History history, Subscriber<Long> subscriber) {
+        List<History> histories = Collections.singletonList(new History()
+                .setLabel(history.label)
+                .setActiveDate(DateTime.now()));
+        historyRepository.insert(histories)
                 .subscribeOn(Schedulers.from(executor))
                 .observeOn(postThread.getScheduler())
                 .subscribe(subscriber);

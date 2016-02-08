@@ -18,7 +18,7 @@ import yuki.android.ormasample.di.component.DaggerActivityComponent;
 import yuki.android.ormasample.di.component.DaggerApplicationComponent;
 import yuki.android.ormasample.di.module.ActivityModule;
 import yuki.android.ormasample.di.module.ApplicationModule;
-import yuki.android.ormasample.presentation.view.HistoryViewActivity;
+import yuki.android.ormasample.presentation.view.activity.HistoryViewActivity;
 import yuki.android.ormasample.test.CustomRobolectricTestRunner;
 import yuki.android.ormasample.test.DefaultRobolectricRule;
 import yuki.android.ormasample.test.RobolectricConfig;

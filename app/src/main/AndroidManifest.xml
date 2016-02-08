@@ -14,7 +14,7 @@
             android:fullBackupContent="true"
             >
         <activity
-                android:name=".presentation.view.HistoryViewActivity"
+                android:name=".presentation.view.activity.HistoryViewActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.NoActionBar"
                 >

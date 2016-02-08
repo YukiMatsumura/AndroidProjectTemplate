@@ -1,4 +1,4 @@
-package yuki.android.ormasample.presentation.view;
+package yuki.android.ormasample.presentation.view.activity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import java.util.List;
@@ -24,10 +23,11 @@ import yuki.android.ormasample.data.entity.History;
 import yuki.android.ormasample.di.component.ActivityComponent;
 import yuki.android.ormasample.di.component.DaggerActivityComponent;
 import yuki.android.ormasample.di.module.ActivityModule;
-import yuki.android.ormasample.presentation.adapter.HistoryViewAdapter;
 import yuki.android.ormasample.presentation.presenter.HistoryViewPresenter;
+import yuki.android.ormasample.presentation.view.adapter.HistoryViewAdapter;
 
-public class HistoryViewActivity extends AppCompatActivity {
+public class HistoryViewActivity extends AppCompatActivity
+        implements HistoryViewAdapter.OnHistoryItemCallback {
 
     private ActivityComponent activityComponent;
 
@@ -47,8 +47,6 @@ public class HistoryViewActivity extends AppCompatActivity {
 
     @Bind(R.id.view_history_list)
     RecyclerView recyclerView;
-
-    private ItemTouchHelper itemTouchHelper;
 
     @NonNull
     public ActivityComponent getComponent() {
@@ -74,13 +72,11 @@ public class HistoryViewActivity extends AppCompatActivity {
         activityComponent.inject(this);
 
         listAdapter = new HistoryViewAdapter();
+        listAdapter.setOnHistoryItemCallback(this);
         recyclerView.setAdapter(listAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         presenter.create(this);
-
-        itemTouchHelper = new ItemTouchHelper(new HistoryItemTouchListener(presenter));
-        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -103,41 +99,31 @@ public class HistoryViewActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public void onShowHistoryList(List<History> histories) {
+    public void showHistoryList(List<History> histories) {
         listAdapter.setHistory(histories);
     }
 
-    public void onShowHistoryCount(Integer count) {
+    public void showHistoryCount(Integer count) {
         Snackbar.make(rootView, "History total count is " + count, Snackbar.LENGTH_LONG).show();
     }
 
     public void onRemovedHistory(long itemId) {
-        int position = recyclerView.findViewHolderForItemId(itemId).getAdapterPosition();
-        listAdapter.removeItem(position);
+        listAdapter.removeItem(
+                recyclerView.findViewHolderForItemId(itemId).getAdapterPosition());
+    }
+
+    @Override
+    public void onHistoryItemSwipe(History history) {
+        presenter.removeHistoryItem(history.id);
+    }
+
+    @Override
+    public void onHistoryItemClick(History history) {
+
     }
 
     @OnClick(R.id.view_fab)
-    public void onClick(FloatingActionButton fab) {
-
-    }
-
-    private static class HistoryItemTouchListener extends ItemTouchHelper.SimpleCallback {
-
-        private HistoryViewPresenter presenter;
-
-        public HistoryItemTouchListener(HistoryViewPresenter presenter) {
-            super(0 /* Drag */, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT /* Swipe */);
-            this.presenter = presenter;
-        }
-
-        @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            this.presenter.removeHistoryItem(viewHolder.getItemId());
-        }
+    public void onFabClick(FloatingActionButton fab) {
+        presenter.addHistory();
     }
 }

@@ -13,4 +13,6 @@ public interface HistoryViewUseCase extends UseCase {
     void getHistoryCount(SingleSubscriber<Integer> subscriber);
 
     void removeHistory(long rowId, SingleSubscriber<Integer> subscriber);
+
+    void addHistory(History history, Subscriber<Long> subscriber);
 }

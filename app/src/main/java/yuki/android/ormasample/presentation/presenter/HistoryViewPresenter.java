@@ -11,7 +11,7 @@ import yuki.android.ormasample.di.scope.ActivityScope;
 import yuki.android.ormasample.domain.executor.DefaultSingleSubscriber;
 import yuki.android.ormasample.domain.executor.DefaultSubscriber;
 import yuki.android.ormasample.domain.usecase.HistoryViewUseCase;
-import yuki.android.ormasample.presentation.view.HistoryViewActivity;
+import yuki.android.ormasample.presentation.view.activity.HistoryViewActivity;
 
 @ActivityScope
 public class HistoryViewPresenter implements Presenter<HistoryViewActivity> {
@@ -67,23 +67,12 @@ public class HistoryViewPresenter implements Presenter<HistoryViewActivity> {
         historyViewUseCase.getHistoryCount(new HistoryCountSubscriber());
     }
 
-    private void onUpdateHistoryView(List<History> histories) {
-        viewer.onShowHistoryList(histories);
-    }
-
-    private void onUpdateHistoryCount(Integer count) {
-        if (count == null) {
-            count = 0;
-        }
-        viewer.onShowHistoryCount(count);
-    }
-
     public void removeHistoryItem(long itemId) {
         historyViewUseCase.removeHistory(itemId, new HistoryRemoveSubscriber(itemId));
     }
 
-    private void onRemoveHistory(long itemId) {
-        viewer.onRemovedHistory(itemId);
+    public void addHistory() {
+        historyViewUseCase.addHistory(new History().setLabel("Hoge"), new HistoryAddSubscriber());
     }
 
     /**
@@ -95,7 +84,7 @@ public class HistoryViewPresenter implements Presenter<HistoryViewActivity> {
 
         @Override
         public void onNext(List<History> histories) {
-            HistoryViewPresenter.this.onUpdateHistoryView(histories);
+            viewer.showHistoryList(histories);
         }
     }
 
@@ -108,7 +97,10 @@ public class HistoryViewPresenter implements Presenter<HistoryViewActivity> {
 
         @Override
         public void onSuccess(Integer count) {
-            HistoryViewPresenter.this.onUpdateHistoryCount(count);
+            if (count == null) {
+                count = 0;
+            }
+            viewer.showHistoryCount(count);
         }
     }
 
@@ -128,9 +120,17 @@ public class HistoryViewPresenter implements Presenter<HistoryViewActivity> {
         @Override
         public void onSuccess(Integer count) {
             if (0 < count) {
-                HistoryViewPresenter.this.onRemoveHistory(itemId);
+                viewer.onRemovedHistory(itemId);
             }
             // TODO: 削除が0件だった場合.
+        }
+    }
+
+    private final class HistoryAddSubscriber extends DefaultSubscriber<Long> {
+
+        @Override
+        public void onCompleted() {
+            showHistory();
         }
     }
 }

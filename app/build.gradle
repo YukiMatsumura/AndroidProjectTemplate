@@ -37,11 +37,14 @@ android {
     buildTypes {
         debug {
             debuggable true
-            minifyEnabled true
+            minifyEnabled false
             testCoverageEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
+            debuggable false
             minifyEnabled false
+            testCoverageEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -51,7 +54,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
     lintOptions {
-        abortOnError false
+        abortOnError true  // Keep clean.
     }
     testOptions {
         unitTests.returnDefaultValues = true
@@ -63,7 +66,7 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
     }
-    
+
     // ビルド高速化
     // DEXプロセスを分離プロセスではなく, 同Gradleプロセス上で実施することでビルドを高速化する.
     // 副作用としてJVMのメモリを大量に消費するため, メモリ確保ができない場合はこれをコメントアウトすること. 
@@ -93,9 +96,15 @@ dependencies {
     compile "com.android.support:appcompat-v7:${supportPackageVersion}"
     compile "com.android.support:design:${supportPackageVersion}"
     compile "com.android.support:support-annotations:${supportPackageVersion}"
-    
+
     // apt.
     provided 'javax.annotation:javax.annotation-api:1.2'
+
+    // Debugger
+    debugCompile 'com.facebook.stetho:stetho:1.3.0'
+    // Only the main stetho dependency is strictly required,
+    // however you may also wish to use one of the network helpers:
+    compile 'com.facebook.stetho:stetho-okhttp:1.3.0'
 
     // ReactiveX.
     compile 'io.reactivex:rxandroid:1.1.0'
@@ -110,7 +119,7 @@ dependencies {
     apt 'com.google.dagger:dagger-compiler:2.0.2'
     compile 'com.google.dagger:dagger:2.0.2'
 
-    // View bind. Butterknife
+    // View bind. ButterKnife
     compile 'com.jakewharton:butterknife:7.0.1'
 
     // ORM. Orma
@@ -124,7 +133,6 @@ dependencies {
 
     // Unit testing. Robolectric
     testCompile "org.robolectric:robolectric:3.0"
-    testCompile 'junit:junit:4.12'
 
     // android Testing support lib.
     androidTestCompile "com.android.support.test:runner:${testingSupportPackageVersion}"

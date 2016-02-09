@@ -28,10 +28,6 @@ public class App extends Application {
 
         // TODO: Stetho setup
         // Stetho.initializeWithDefaults(this);
-
-        // FIXME: debug code... please delete me.
-        component.ormaDatabase().insertIntoHistory(
-                new History().setLabel("Test" + System.currentTimeMillis()).setActiveDate(DateTime.now()));
     }
 
     @NonNull

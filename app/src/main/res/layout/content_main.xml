@@ -13,7 +13,7 @@
                 tools:showIn="@layout/activity_main"
         >
 
-    <android.support.v7.widget.RecyclerView
+    <yuki.android.ormasample.presentation.view.view.HistoryListView
             android:id="@+id/view_history_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

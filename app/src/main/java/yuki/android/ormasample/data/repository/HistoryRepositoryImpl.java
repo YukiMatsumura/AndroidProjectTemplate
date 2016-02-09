@@ -7,7 +7,7 @@ import rx.Observable;
 import rx.Single;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import yuki.android.ormasample.crosscut.bus.Bus;
+import yuki.android.ormasample.crosscut.bus.BroadcastBus;
 import yuki.android.ormasample.data.entity.History;
 import yuki.android.ormasample.data.entity.OrmaDatabase;
 import yuki.android.ormasample.domain.repository.HistoryRepository;
@@ -52,7 +52,7 @@ public class HistoryRepositoryImpl implements HistoryRepository {
                     @Override
                     public void call() {
                         // Historyレコードの変更をブロードキャスト
-                        Bus.stream().send(new RepositoryChangedEvent.History());
+                        BroadcastBus.stream().send(new RepositoryChangedEvent.History());
                     }
                 });
     }
@@ -68,7 +68,7 @@ public class HistoryRepositoryImpl implements HistoryRepository {
                     public void call(Integer deletedRows) {
                         if (0 < deletedRows) {
                             // 削除された場合はHistoryレコードの変更をブロードキャスト
-                            Bus.stream().send(new RepositoryChangedEvent.History());
+                            BroadcastBus.stream().send(new RepositoryChangedEvent.History());
                         }
                         // TODO: 削除0件だった場合
                     }
@@ -84,7 +84,7 @@ public class HistoryRepositoryImpl implements HistoryRepository {
                     public void call(Integer deletedRows) {
                         if (0 < deletedRows) {
                             // 削除された行がある場合はHistoryレコードの変更をブロードキャスト
-                            Bus.stream().send(new RepositoryChangedEvent.History());
+                            BroadcastBus.stream().send(new RepositoryChangedEvent.History());
                         }
                         // TODO: 削除0件だった場合
                     }

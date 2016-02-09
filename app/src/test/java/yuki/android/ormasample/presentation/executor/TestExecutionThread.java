@@ -4,7 +4,7 @@ import rx.Scheduler;
 import rx.schedulers.Schedulers;
 import yuki.android.ormasample.domain.executor.PostExecutionThread;
 
-public class TestCurrentThread implements PostExecutionThread {
+public class TestExecutionThread implements PostExecutionThread {
 
     @Override
     public Scheduler getScheduler() {

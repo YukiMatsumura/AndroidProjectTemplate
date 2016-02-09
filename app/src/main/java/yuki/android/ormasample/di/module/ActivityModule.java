@@ -10,6 +10,8 @@ import yuki.android.ormasample.domain.executor.ThreadExecutor;
 import yuki.android.ormasample.domain.repository.HistoryRepository;
 import yuki.android.ormasample.domain.usecase.HistoryViewUseCase;
 import yuki.android.ormasample.domain.usecase.HistoryViewUseCaseImpl;
+import yuki.android.ormasample.presentation.controller.HistoryViewController;
+import yuki.android.ormasample.presentation.presenter.HistoryViewPresenter;
 
 @Module
 public class ActivityModule {
@@ -24,6 +26,18 @@ public class ActivityModule {
     @ActivityScope
     Activity provideActivity() {
         return this.activity;
+    }
+
+    @Provides
+    @ActivityScope
+    HistoryViewController provideHistoryViewController(HistoryViewPresenter presenter, HistoryViewUseCase useCase) {
+        return new HistoryViewController(presenter, useCase);
+    }
+
+    @Provides
+    @ActivityScope
+    HistoryViewPresenter provideHistoryViewPresenter() {
+        return new HistoryViewPresenter();
     }
 
     @Provides

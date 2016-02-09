@@ -16,7 +16,7 @@ import yuki.android.ormasample.domain.executor.DefaultSubscriber;
 import yuki.android.ormasample.domain.executor.PostExecutionThread;
 import yuki.android.ormasample.domain.executor.ThreadExecutor;
 import yuki.android.ormasample.domain.repository.HistoryRepository;
-import yuki.android.ormasample.presentation.executor.TestCurrentThread;
+import yuki.android.ormasample.presentation.executor.TestExecutionThread;
 
 import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.*;
@@ -67,7 +67,7 @@ public class HistoryViewUseCaseImplTest {
         HistoryViewUseCase useCase = new HistoryViewUseCaseImpl(
                 historyRepository,
                 new TestCurrentThreadExecutor(),
-                new TestCurrentThread());
+                new TestExecutionThread());
         useCase.showLatestHistory(new DefaultSubscriber<List<History>>() {
             @Override
             public void onNext(List<History> histories) {

@@ -1,6 +1,6 @@
 package yuki.android.ormasample.crosscut.bus;
 
-public abstract class Bus {
+public abstract class BroadcastBus {
 
     private static final BusStream BUS_STREAM = new BusStream();
 

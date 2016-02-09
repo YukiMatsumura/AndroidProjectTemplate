@@ -1,7 +1,5 @@
 package yuki.android.ormasample;
 
-import com.facebook.stetho.Stetho;
-
 import android.app.Application;
 import android.support.annotation.NonNull;
 
@@ -28,7 +26,8 @@ public class App extends Application {
                 .applicationModule(new ApplicationModule(this))
                 .build();
 
-        Stetho.initializeWithDefaults(this);
+        // TODO: Stetho setup
+        // Stetho.initializeWithDefaults(this);
 
         // FIXME: debug code... please delete me.
         component.ormaDatabase().insertIntoHistory(

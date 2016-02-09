@@ -16,7 +16,7 @@ import rx.subjects.Subject;
  *
  *     mCompositeSubscription = new CompositeSubscription();
  *     mCompositeSubscription.add(
- *         RxBusProvider.getInstance()
+ *         BroadcastBus.stream()
  *             .toObservable()
  *             .observeOn(AndroidSchedulers.mainThread())
  *             .subscribe(o -> {

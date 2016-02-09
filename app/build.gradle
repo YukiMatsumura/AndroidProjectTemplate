@@ -73,8 +73,8 @@ android {
     // http://stackoverflow.com/questions/35224255/to-run-dex-in-process-the-gradle-daemon-needs-a-larger-heap-it-currently-has-9
     dexOptions {
         // DexOptions API: http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.DexOptions.html
-        javaMaxHeapSize "4g"
-        dexInProcess = true
+        // javaMaxHeapSize "4g"
+        dexInProcess = false
     }
 
     // ライブラリ間の依存性解決 
@@ -137,6 +137,8 @@ dependencies {
     // android Testing support lib.
     androidTestCompile "com.android.support.test:runner:${testingSupportPackageVersion}"
     androidTestCompile "com.android.support.test:rules:${testingSupportPackageVersion}"
+    androidTestCompile 'org.mockito:mockito-core:1.10.19'
+    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
 }
 
 // メソッドのIOをロギングするHugoライブラリをdebugビルドでもOFFにしたい場合は

@@ -1,0 +1,266 @@
+apply plugin: 'com.android.application'  // Android Plugin DSL: http://google.github.io/android-gradle-dsl/
+
+buildscript {
+    dependencies {
+    }
+}
+
+/*
+ * -------------------------------------------------------------------
+ *   一般Javaコンパイルプロセスの設定.
+ * -------------------------------------------------------------------
+ */
+
+apply plugin: 'net.ltgt.errorprone'
+apply plugin: 'com.github.ben-manes.versions'
+
+tasks.withType(JavaCompile) {
+    configure(options) {
+//        compilerArgs << '-Xlint:all'        // Turn on all warnings
+//        compilerArgs << '-Xlint:-options'   // Turn off 'missing' bootclasspath warning
+//        compilerArgs << '-Xlint:-path'      // Turn off アーカイブ・ファイルの予期しない拡張子(aar)
+//        compilerArgs << '-Werror'           // Turn warnings into errors
+        compilerArgs << '-Xdiags:verbose'   // Turn on verbose
+        deprecation = true
+        encoding = 'UTF-8'
+        // incremental = true // https://code.google.com/p/android/issues/detail?id=82411
+    }
+}
+
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat 'full'
+        showCauses true
+        showExceptions true
+        showStackTraces true
+        showStandardStreams true
+    }
+}
+
+tasks.withType(JavaForkOptions) {
+    // Prevent forked processes from stealing focus (on MacOS at least)
+    jvmArgs '-Djava.awt.headless=true'
+}
+
+tasks.withType(Javadoc) {
+    configure(options) {
+        header = name
+        author = true
+        links(['http://docs.oracle.com/javase/8/docs/api/',
+               'http://docs.oracle.com/javase/7/docs/api/'] as String[])
+        linksOffline 'http://d.android.com/reference', "${android.sdkDirectory}/docs/reference"
+        exclude '**/BuildConfig.java', '**/R.java'
+        if (JavaVersion.current().isJava8Compatible()) {
+            addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
+/*
+ * -------------------------------------------------------------------
+ *   コードアナリティクスの設定
+ * -------------------------------------------------------------------
+ */
+
+apply plugin: 'pmd'
+apply plugin: 'jacoco'
+apply plugin: 'findbugs'
+apply plugin: 'checkstyle'
+
+android {
+    compileSdkVersion = rootProject.ext.compileSdkVersion
+    buildToolsVersion = rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        encoding "UTF-8"
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    signingConfigs.debug {
+        // FIXME: デバッグ用署名はプロジェクトルート配下に下記の内容で設置すること
+        storeFile rootProject.file('debug.keystore')
+        storePassword 'android'
+        keyAlias 'androiddebugkey'
+        keyPassword 'android'
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+            testCoverageEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles(getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro')
+            signingConfig signingConfigs.debug  // FIXME: 商用KeyStoreに置き換えること
+        }
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    dexOptions {
+        // ビルド高速化
+        // CIサーバでは常にCleanBuildになるため ./gradlew clean assemble -PdisablePreDex で実行れば高速化できる
+        // see http://tools.android.com/tech-docs/new-build-system/tips#TOC-Improving-Build-Server-performance.
+        preDexLibraries = !project.hasProperty('disablePreDex')
+
+        // FIXME: メモリが十分にあるならこれらのコメントアウトを外す
+//        dexInProcess = true   // 同プロセスでDEXコンパイルすることによるビルド高速化
+//        javaMaxHeapSize "4g"  // DEXコンパイルで必要なJavaヒープの確保
+    }
+
+    testOptions.unitTests.all {
+        // JSR-202. UnitTestに限りclassファイル検証をOFFする
+        jvmArgs '-noverify' // Flurry SDK
+    }
+
+    lintOptions {
+        textReport true                         // ビルドアウトプットコンソールにLint結果を出力する
+        textOutput 'stdout'
+        checkAllWarnings true
+        warningsAsErrors true
+        disable 'PrivateResource',              // App Compat resources - actionBarSize/colorPrimary
+                'UnusedResources',              // リリースビルドで未使用リソースは削除されるため当該Lint無効化
+                'SelectableText',               // FIXME: TextViewの選択状態を常時サポートするならこのコメントアウトを外す
+                'GoogleAppIndexingWarning',
+                'GoogleAppIndexingApiWarning',  // FIXME: AppIndexingをサポートするならこのコメントアウトを外す
+                'InvalidPackage',               // ButterKnife, Okio and Realm throw this warning
+                'AllowBackup',
+                'UnusedIds'                     // リリースビルドで未使用リソースは削除されるため当該Lint無効化
+    }
+
+    packagingOptions {
+        exclude '.readme'
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/dependencies'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/license'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/notice'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/.readme'
+        exclude 'META-INF/readme.txt'
+        exclude 'META-INF/README.txt'
+        exclude 'META-INF/services/javax.annotation.processing.Processor' // Butterknife
+    }
+
+    (android.hasProperty('applicationVariants')
+            ? android.'applicationVariants'
+            : android.'libraryVariants').all { variant ->
+
+        def variantName = variant.name.capitalize()
+        def autoGenerated = ['**/R.class',
+                             '**/R$*.class',
+                             '**/Manifest*.*',
+                             'android/**/*.*',
+                             '**/BuildConfig.*',
+                             '**/*$ViewBinder*.*',
+                             '**/*$ViewInjector*.*']
+
+        variant.assemble.dependsOn "lint$variantName"  // Run lint on each build
+
+        task("pmd$variantName", type: Pmd, dependsOn: "assemble$variantName") {
+            group 'Reporting'
+            description "Generate ${variantName} Pmd reports."
+
+            ignoreFailures = true
+            reports {
+                xml.enabled = true
+                html.enabled = true
+            }
+
+            ruleSetFiles = files("${rootProject.rootDir}/config/pmd.xml")
+            ruleSets = []
+            source = files(variant.javaCompiler.source)
+            classpath = files(configurations.compile.files)
+        }
+
+        task("jacoco${variantName}Report", type: JacocoReport,
+                dependsOn: "test${variantName}UnitTest") {
+            group 'Reporting'
+            description "Generate ${variantName} Jacoco coverage reports."
+
+            reports {
+                xml.enabled = true
+                html.enabled = true
+            }
+
+            // variant.javaCompile.source does not work
+            // traverses from starting point
+            sourceDirectories = files(android.sourceSets.main.java.srcDirs)
+            executionData = files("${buildDir}/jacoco/test${variantName}UnitTest.exec")
+            classDirectories = fileTree(dir: variant.javaCompiler.destinationDir,
+                    excludes: autoGenerated)
+        }
+
+        task("findbugs$variantName", type: FindBugs, dependsOn: "assemble$variantName") {
+            group 'Reporting'
+            description "Generate ${variantName} Findbugs reports."
+
+            ignoreFailures = true
+            reports {
+                xml.enabled = false
+                html.enabled = true
+            }
+
+            effort = 'max'
+            reportLevel = 'low'
+            source = files(variant.javaCompiler.source)
+            classpath = files(configurations.compile.files)
+            classes = fileTree(dir: variant.javaCompile.destinationDir,
+                    excludes: autoGenerated)
+        }
+
+        task("checkstyle$variantName", type: Checkstyle, dependsOn: "assemble$variantName") {
+            // Checkstyle import from IntelliJ CodeStyle.
+            //   https://youtrack.jetbrains.com/issue/IDEA-61520
+            group 'Reporting'
+            description "Generate ${variantName} Checkstyle reports."
+
+            ignoreFailures = true
+            // TODO generate HTML, 'reports.html' is not available
+            reports.xml.enabled = true
+
+            configFile = rootProject.file('gradle/checkstyle-hard.xml')
+            source = files(android.sourceSets.main.java.srcDirs)
+            classpath = files(configurations.compile.files)
+        }
+    }
+}
+
+dependencies {
+    androidJacocoAgent 'org.jacoco:org.jacoco.agent:0.7.2.201409121644' // https://github.com/jacoco/jacoco/issues/288
+    androidJacocoAnt 'org.jacoco:org.jacoco.agent:0.7.2.201409121644' // https://github.com/jacoco/jacoco/issues/288
+    checkstyle 'com.puppycrawl.tools:checkstyle:6.14.1'
+    errorprone 'com.google.errorprone:error_prone_core:2.0.7'
+    findbugs 'com.google.code.findbugs:findbugs:3.0.1'
+    jacocoAgent 'org.jacoco:org.jacoco.agent:0.7.2.201409121644' // https://github.com/jacoco/jacoco/issues/288
+    jacocoAnt 'org.jacoco:org.jacoco.ant:0.7.2.201409121644' // https://github.com/jacoco/jacoco/issues/288
+    pmd 'net.sourceforge.pmd:pmd-java:5.4.1'
+}
+
+/*
+ * -------------------------------------------------------------------
+ *   ユーティリティ
+ * -------------------------------------------------------------------
+ */
+
+// プロジェクトのJava code style用設定ファイルをダウンロードする.
+// AndroidStudioのCodeStyle設定ファイルをGitHubからDLするスクリプトを実行する.
+task fetchCodeStyle(type: Exec) {
+    workingDir './'
+    executable "./script/attachCodeStyle.sh"
+}

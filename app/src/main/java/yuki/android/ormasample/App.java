@@ -4,9 +4,7 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 
 import timber.log.Timber;
-import yuki.android.ormasample.crosscut.i18n.DateTime;
 import yuki.android.ormasample.crosscut.logger.ReleaseTree;
-import yuki.android.ormasample.data.entity.History;
 import yuki.android.ormasample.di.component.ApplicationComponent;
 import yuki.android.ormasample.di.component.DaggerApplicationComponent;
 import yuki.android.ormasample.di.module.ApplicationModule;

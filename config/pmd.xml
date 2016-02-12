@@ -12,7 +12,7 @@
         PMDルールセットリファレンス
           https://pmd.github.io/pmd-5.4.1/pmd-java/rules/index.html
 
-        PMDルールに指定する.xmlファイル名は.gradleキャッシュに含まれる.jarに一覧が内包されています.
+        PMDルールに指定する.xmlファイル名は.gradleキャッシュに含まれる.jar内に一覧が含まれています.
           e.g.) .gradle/caches/pmd-core-5.4.1.jar/rulesets/internal/all-java.xml
      -->
 

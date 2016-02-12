@@ -1,20 +1,50 @@
-apply plugin: 'com.android.application'  // Android Plugin DSL: http://google.github.io/android-gradle-dsl/
+apply plugin: 'com.android.application'
 
-buildscript {
-    dependencies {
-    }
-}
+// Android Gradle Known issues: http://tools.android.com/knownissues
+
+/*
+ * android.gradleファイルを導入するにあたり, 下記をプロジェクトルートのbuild.gradleに追記すること.
+ * 
+ * buildscript {
+ *     repositories {
+ *         ...
+ *         maven { url 'https://plugins.gradle.org/m2/' } // official gradle plugins
+ *     }
+ *     dependencies {
+ * 
+ *         ...
+ * 
+ *         // google error-prone
+ *         classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.8'
+ *
+ *         // dex method count
+ *         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.3.1'
+ *
+ *         // apk size
+ *         classpath 'com.vanniktech:gradle-android-apk-size-plugin:0.1.2'
+ * 
+ *         // check for plugin updates
+ *         classpath 'com.github.ben-manes:gradle-versions-plugin:0.11.3'
+ *     }
+ */
 
 /*
  * -------------------------------------------------------------------
- *   一般Javaコンパイルプロセスの設定.
+ *   Javaコンパイルプロセス共通設定.
  * -------------------------------------------------------------------
  */
 
 apply plugin: 'net.ltgt.errorprone'
 apply plugin: 'com.github.ben-manes.versions'
 
+/*
+ * Javaコンパイル全般.
+ *   より厳格なJavaコンパイルを実行するには各compileArgsのコメントアウトを外す.
+ *   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.compile.JavaCompile.html
+ */
 tasks.withType(JavaCompile) {
+    // Javaコンパイルオプションの設定.
+    //   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.compile.CompileOptions.html
     configure(options) {
 //        compilerArgs << '-Xlint:all'        // Turn on all warnings
 //        compilerArgs << '-Xlint:-options'   // Turn off 'missing' bootclasspath warning
@@ -27,22 +57,30 @@ tasks.withType(JavaCompile) {
     }
 }
 
+/*
+ * JUnit(3.8.x or 4.x)の設定.
+ *   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html
+ */
 tasks.withType(Test) {
+    // テストFail時のログ出力設定.
+    //   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.logging.TestLoggingContainer.html
     testLogging {
-        exceptionFormat 'full'
-        showCauses true
+        // Test実行時のログ設定.
+        exceptionFormat 'full'    // Full display of exceptions. (or 'short')
+        showCauses true           // テストFailの内容は全て出力する
         showExceptions true
         showStackTraces true
-        showStandardStreams true
+        showStandardStreams true  // テストの結果はStdOutへ出力 
     }
 }
 
-tasks.withType(JavaForkOptions) {
-    // Prevent forked processes from stealing focus (on MacOS at least)
-    jvmArgs '-Djava.awt.headless=true'
-}
-
+/*
+ * Javadocの設定.
+ *   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Javadoc.html
+ */
 tasks.withType(Javadoc) {
+    // Javadocオプション.
+    //  see: https://docs.gradle.org/current/javadoc/org/gradle/external/javadoc/StandardJavadocDocletOptions.html
     configure(options) {
         header = name
         author = true
@@ -58,7 +96,7 @@ tasks.withType(Javadoc) {
 
 /*
  * -------------------------------------------------------------------
- *   コードアナリティクスの設定
+ *   Androidプロジェクト共通設定
  * -------------------------------------------------------------------
  */
 
@@ -67,47 +105,92 @@ apply plugin: 'jacoco'
 apply plugin: 'findbugs'
 apply plugin: 'checkstyle'
 
+// Androidビルド設定
+//   see: http://google.github.io/android-gradle-dsl/
 android {
     compileSdkVersion = rootProject.ext.compileSdkVersion
     buildToolsVersion = rootProject.ext.buildToolsVersion
 
     compileOptions {
         encoding "UTF-8"
+
+        // sourceCompatibilityとtargetCompatibilityは同じVersionとすること.
+        // AndroidでJava7構文を使用するには下記の制約がつく.
+        //   - Try-with-resources構文: minSdkVersion >= 19
+        //   - その他の構文(multi-catch, diamond operator): minSdkVersion >= 8
+        //   - BuildToolsVersion >= 19
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
+    // apk署名設定. 
+    //   see: http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.SigningConfig.html
     signingConfigs.debug {
-        // FIXME: デバッグ用署名はプロジェクトルート配下に下記の内容で設置すること
+        // FIXME: デバッグ用署名はプロジェクトルート配下に以下の内容で設置する
+        // 以下のデバッグ用署名設定はAndroid標準のもので $HOME/.android/debug.keystore に格納されている.
+        //   see: http://tools.android.com/tech-docs/new-build-system/user-guide#TOC-Signing-Configurations
         storeFile rootProject.file('debug.keystore')
         storePassword 'android'
         keyAlias 'androiddebugkey'
         keyPassword 'android'
+
+        // アプリケーションの署名について.
+        //   see: http://developer.android.com/intl/ja/tools/publishing/app-signing.html
     }
 
+    // ビルド種別毎の設定
+    //   see: http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.BuildType.html
     buildTypes {
         debug {
             debuggable true
+
+            // ビルド高速化のためシュリンク処理はスキップする.
             minifyEnabled false
-            testCoverageEnabled true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            testCoverageEnabled true
         }
         release {
-            minifyEnabled false
+            debuggable false
+
+            // 未使用リソースの自動削除設定.
+            //   シュリンク設定をonにする場合, リフレクションなどで使用されるAPIやリソースが削除されないよう, 
+            //   proguard-rules.proファイルにkeep設定を適切に定義すること. 
+            //     see: http://tools.android.com/tech-docs/new-build-system/resource-shrinking
+            minifyEnabled true    // Code shrink by ProGuard
+            shrinkResources true  // Resource shrink by ProGuard
             proguardFiles(getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro')
+
+            testCoverageEnabled false
             signingConfig signingConfigs.debug  // FIXME: 商用KeyStoreに置き換えること
         }
     }
 
+    // テスト実行設定
+    //   see: http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.TestOptions.html
     testOptions {
+        unitTests.all {
+            jvmArgs '-XX:MaxPermSize=256m'  // All the usual Gradle options.
+            jvmArgs '-noverify'             // JSR-202. UnitTestに限りclassファイル検証をOFFする(Flurry SDK
+        }
+
+        // android.jarに含まれるAndroid Platform API群がexceptionを発生する振る舞いを,
+        // デフォルト値(false, null, etc.)を返すように変更する.
+        //   see: http://tools.android.com/tech-docs/unit-testing-support#TOC-Method-...-not-mocked.-
         unitTests.returnDefaultValues = true
+
+        // ユニットテストサポート
+        //  http://tools.android.com/tech-docs/unit-testing-support
     }
 
+    // DEXプロセスのオプション
+    //   see: http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.DexOptions.html
     dexOptions {
         // ビルド高速化
         // CIサーバでは常にCleanBuildになるため ./gradlew clean assemble -PdisablePreDex で実行れば高速化できる
-        // see http://tools.android.com/tech-docs/new-build-system/tips#TOC-Improving-Build-Server-performance.
+        //   see http://tools.android.com/tech-docs/new-build-system/tips#TOC-Improving-Build-Server-performance.
         preDexLibraries = !project.hasProperty('disablePreDex')
 
         // FIXME: メモリが十分にあるならこれらのコメントアウトを外す
@@ -115,27 +198,27 @@ android {
 //        javaMaxHeapSize "4g"  // DEXコンパイルで必要なJavaヒープの確保
     }
 
-    testOptions.unitTests.all {
-        // JSR-202. UnitTestに限りclassファイル検証をOFFする
-        jvmArgs '-noverify' // Flurry SDK
-    }
-
+    // Lintの設定
+    //   Lint設定ファイルはプロジェクトルートのconfigフォルダに配置すること.
+    //   see: http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.LintOptions.html
     lintOptions {
         textReport true                         // ビルドアウトプットコンソールにLint結果を出力する
         textOutput 'stdout'
         checkAllWarnings true
-        warningsAsErrors true
-        disable 'PrivateResource',              // App Compat resources - actionBarSize/colorPrimary
-                'UnusedResources',              // リリースビルドで未使用リソースは削除されるため当該Lint無効化
-                'SelectableText',               // FIXME: TextViewの選択状態を常時サポートするならこのコメントアウトを外す
-                'GoogleAppIndexingWarning',
-                'GoogleAppIndexingApiWarning',  // FIXME: AppIndexingをサポートするならこのコメントアウトを外す
-                'InvalidPackage',               // ButterKnife, Okio and Realm throw this warning
-                'AllowBackup',
-                'UnusedIds'                     // リリースビルドで未使用リソースは削除されるため当該Lint無効化
+        warningsAsErrors true                   // Warnレベルの警告をErrorと同様に扱う
+        abortOnError true                       // Errorが見つかった場合にビルドを失敗させる
+
+        // Lintチェックの無効化設定.
+        //   see: http://tools.android.com/tips/lint/suppressing-lint-warnings
+        lintConfig rootProject.file('config/lint.xml')
+
+        // Lintカスタムチェック/ルールを書く
+        //   http://tools.android.com/tips/lint/writing-a-lint-check
+        //   http://tools.android.com/tips/lint-custom-rules
     }
 
     packagingOptions {
+        // 以下は外部ライブラリを取り込み, パッケージ化する際の競合を解消する設定
         exclude '.readme'
         exclude 'LICENSE.txt'
         exclude 'META-INF/DEPENDENCIES'
@@ -157,11 +240,17 @@ android {
         exclude 'META-INF/services/javax.annotation.processing.Processor' // Butterknife
     }
 
+    /*
+     * 全ビルドバリアントに共通のタスクを設定する
+     */
     (android.hasProperty('applicationVariants')
             ? android.'applicationVariants'
             : android.'libraryVariants').all { variant ->
 
         def variantName = variant.name.capitalize()
+
+        // 自動生成ファイルの登録.
+        // 静的解析チェックツールの実行時にこれらの自動生成ファイルはチェック対象外とする.
         def autoGenerated = ['**/R.class',
                              '**/R$*.class',
                              '**/Manifest*.*',
@@ -170,8 +259,12 @@ android {
                              '**/*$ViewBinder*.*',
                              '**/*$ViewInjector*.*']
 
-        variant.assemble.dependsOn "lint$variantName"  // Run lint on each build
+        variant.assemble.dependsOn "lint$variantName"  // 全てのビルドバリアントに置いてLintの実行は必須化する
 
+        /*
+         * PMD
+         *   see: https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.PmdExtension.html
+         */
         task("pmd$variantName", type: Pmd, dependsOn: "assemble$variantName") {
             group 'Reporting'
             description "Generate ${variantName} Pmd reports."
@@ -184,10 +277,14 @@ android {
 
             ruleSetFiles = files("${rootProject.rootDir}/config/pmd.xml")
             ruleSets = []
-            source = files(variant.javaCompiler.source)
+            source = files(android.sourceSets.main.java.srcDirs)
             classpath = files(configurations.compile.files)
         }
 
+        /*
+         * Jacoco
+         *   see: https://docs.gradle.org/current/dsl/org.gradle.testing.jacoco.tasks.JacocoReport.html
+         */
         task("jacoco${variantName}Report", type: JacocoReport,
                 dependsOn: "test${variantName}UnitTest") {
             group 'Reporting'
@@ -206,6 +303,10 @@ android {
                     excludes: autoGenerated)
         }
 
+        /*
+         * Findbugs
+         *   see: https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.FindBugsExtension.html
+         */
         task("findbugs$variantName", type: FindBugs, dependsOn: "assemble$variantName") {
             group 'Reporting'
             description "Generate ${variantName} Findbugs reports."
@@ -220,21 +321,25 @@ android {
             reportLevel = 'low'
             source = files(variant.javaCompiler.source)
             classpath = files(configurations.compile.files)
-            classes = fileTree(dir: variant.javaCompile.destinationDir,
+            classes = fileTree(dir: android.sourceSets.main.java.srcDirs,
                     excludes: autoGenerated)
         }
 
+        /*
+         * CheckStyle
+         *   see: https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.Checkstyle.html
+         */
         task("checkstyle$variantName", type: Checkstyle, dependsOn: "assemble$variantName") {
-            // Checkstyle import from IntelliJ CodeStyle.
-            //   https://youtrack.jetbrains.com/issue/IDEA-61520
             group 'Reporting'
             description "Generate ${variantName} Checkstyle reports."
 
+            showViolations true         // CheckStyle解析結果をStdOutに出力する
             ignoreFailures = true
-            // TODO generate HTML, 'reports.html' is not available
-            reports.xml.enabled = true
 
-            configFile = rootProject.file('gradle/checkstyle-hard.xml')
+            reports.xml.enabled = true
+            reports.html.enabled = true
+
+            configFile = rootProject.file('config/checkstyle.xml')
             source = files(android.sourceSets.main.java.srcDirs)
             classpath = files(configurations.compile.files)
         }
@@ -258,9 +363,11 @@ dependencies {
  * -------------------------------------------------------------------
  */
 
-// プロジェクトのJava code style用設定ファイルをダウンロードする.
-// AndroidStudioのCodeStyle設定ファイルをGitHubからDLするスクリプトを実行する.
-task fetchCodeStyle(type: Exec) {
+// プロジェクトのCode Style設定ファイルのダウンロードスクリプトを実行する.
+task pullCodeStyle(type: Exec) {
+    group 'Other'
+    description "Download and Settings code style."
+
     workingDir './'
-    executable "./script/attachCodeStyle.sh"
+    executable "./script/pullCodeStyle.sh"
 }

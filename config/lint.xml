@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+
+    <!--
+      ****************************************************************************************
+      以下は外部ライブラリを取り込む際に必要な無効化設定.
+      ****************************************************************************************
+     -->
+    <issue id="InvalidPackage">
+        <!--
+           ButterKnife, Okio and Realm, Orma がInvalidPackageのwarningを投げる.
+           antlr4はSQLのパースで使用されるが, antlr4-runtimeがimports java.awt.*,を含んでおり,
+           これがAndroid Platformに含まれていないためInvalidPackage warningを引き起こす.
+           いずれも既知のwarningであり実害はないためこれを無害化する.
+         -->
+        <ignore regexp=".*/antlr4-runtime-.*.jar" />
+        <!-- antlr4-runtime includ treelayout -->
+        <ignore regexp=".*/org.abego.treelayout.core-.*.jar" />
+        <!-- Stetho include okio -->
+        <ignore regexp=".*/okio-.*.jar" />
+    </issue>
+
+
+    <!--
+      ****************************************************************************************
+      以下は一般的なアプリ開発において開発効率を妨げかねないルールを無効化するもの.
+      ****************************************************************************************
+     -->
+
+    <!-- 未使用リソースはReleaseビルドのShirinkにより削除するため無効化 -->
+    <issue id="UnusedIds"
+           severity="ignore" />
+    <issue id="UnusedResources"
+           severity="ignore" />
+
+    <!-- 
+      TextViewのテキスト選択を必要としないためこのルールを無効化する. 
+      TextViewのテキストが選択可能とする必要がある場合はこれを有効化すること.
+       * http://developer.android.com/intl/ja/reference/android/R.styleable.html#TextView_textIsSelectable
+     -->
+    <issue id="SelectableText"
+           severity="ignore" />
+
+
+    <!--
+      ****************************************************************************************
+      以下はAndroid Platformが提供する機能への追従を促すもの. プロジェクトのサポートに応じて有効化する.
+      ****************************************************************************************
+     -->
+
+    <!--
+      アプリケーションデータのバックアップサポート.
+       * http://developer.android.com/reference/android/R.attr.html#allowBackup
+       * http://developer.android.com/reference/android/app/backup/BackupManager.html
+       * http://developer.android.com/guide/topics/data/backup.html
+     -->
+    <issue id="AllowBackup"
+           severity="ignore" />
+
+    <!--
+      App Indexingのサポート.
+       * https://developers.google.com/app-indexing/introduction?hl=ja
+     -->
+    <issue id="GoogleAppIndexingWarning"
+           severity="ignore" />
+
+    <!--
+       IntelliJ Bugs
+         see: "Element X is not allowed here" error message is no problem.
+              https://code.google.com/p/android/issues/detail?id=175741
+
+       Lint無効化
+         see: http://tools.android.com/tips/lint/suppressing-lint-warnings
+     -->
+</lint>

@@ -86,7 +86,8 @@ tasks.withType(Javadoc) {
         author = true
         links(['http://docs.oracle.com/javase/8/docs/api/',
                'http://docs.oracle.com/javase/7/docs/api/'] as String[])
-        linksOffline 'http://d.android.com/reference', "${android.sdkDirectory}/docs/reference"
+        linksOffline 'http://d.android.com/reference',
+                "${android.sdkDirectory}/docs/reference"
         exclude '**/BuildConfig.java', '**/R.java'
         if (JavaVersion.current().isJava8Compatible()) {
             addStringOption('Xdoclint:none', '-quiet')
@@ -147,7 +148,9 @@ android {
             // ビルド高速化のためシュリンク処理はスキップする.
             minifyEnabled false
             shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles(
+                    getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro')
 
             testCoverageEnabled true
         }
@@ -155,12 +158,11 @@ android {
             debuggable false
 
             // 未使用リソースの自動削除設定.
-            //   シュリンク設定をonにする場合, リフレクションなどで使用されるAPIやリソースが削除されないよう, 
-            //   proguard-rules.proファイルにkeep設定を適切に定義すること. 
-            //     see: http://tools.android.com/tech-docs/new-build-system/resource-shrinking
+            //   see: http://tools.android.com/tech-docs/new-build-system/resource-shrinking
             minifyEnabled true    // Code shrink by ProGuard
             shrinkResources true  // Resource shrink by ProGuard
-            proguardFiles(getDefaultProguardFile('proguard-android-optimize.txt'),
+            proguardFiles(
+                    getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro')
 
             testCoverageEnabled false
@@ -170,26 +172,21 @@ android {
 
     // テスト実行設定
     //   see: http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.TestOptions.html
+    //   see: http://tools.android.com/tech-docs/unit-testing-support
     testOptions {
         unitTests.all {
             jvmArgs '-XX:MaxPermSize=256m'  // All the usual Gradle options.
-            jvmArgs '-noverify'             // JSR-202. UnitTestに限りclassファイル検証をOFFする(Flurry SDK
+            jvmArgs '-noverify'  // JSR-202.
         }
 
-        // android.jarに含まれるAndroid Platform API群がexceptionを発生する振る舞いを,
-        // デフォルト値(false, null, etc.)を返すように変更する.
-        //   see: http://tools.android.com/tech-docs/unit-testing-support#TOC-Method-...-not-mocked.-
+        // see: http://tools.android.com/tech-docs/unit-testing-support#TOC-Method-...-not-mocked.-
         unitTests.returnDefaultValues = true
-
-        // ユニットテストサポート
-        //  http://tools.android.com/tech-docs/unit-testing-support
     }
 
     // DEXプロセスのオプション
     //   see: http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.DexOptions.html
     dexOptions {
-        // ビルド高速化
-        // CIサーバでは常にCleanBuildになるため ./gradlew clean assemble -PdisablePreDex で実行れば高速化できる
+        // CIサーバでは常にCleanBuildになるため ./gradlew clean assemble -PdisablePreDex で実行すれば高速化できる
         //   see http://tools.android.com/tech-docs/new-build-system/tips#TOC-Improving-Build-Server-performance.
         preDexLibraries = !project.hasProperty('disablePreDex')
 
@@ -209,12 +206,7 @@ android {
         abortOnError true                       // Errorが見つかった場合にビルドを失敗させる
 
         // Lintチェックの無効化設定.
-        //   see: http://tools.android.com/tips/lint/suppressing-lint-warnings
         lintConfig rootProject.file('config/lint.xml')
-
-        // Lintカスタムチェック/ルールを書く
-        //   http://tools.android.com/tips/lint/writing-a-lint-check
-        //   http://tools.android.com/tips/lint-custom-rules
     }
 
     packagingOptions {
@@ -237,7 +229,7 @@ android {
         exclude 'META-INF/.readme'
         exclude 'META-INF/readme.txt'
         exclude 'META-INF/README.txt'
-        exclude 'META-INF/services/javax.annotation.processing.Processor' // Butterknife
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
 
     /*
@@ -256,10 +248,25 @@ android {
                              '**/Manifest*.*',
                              'android/**/*.*',
                              '**/BuildConfig.*',
+                             // ButterKnife
                              '**/*$ViewBinder*.*',
-                             '**/*$ViewInjector*.*']
+                             '**/*$ViewInjector*.*',
+                             // Dagger2
+                             '**/Dagger*.*',
+                             '**/*_Provide*Factory.class.*',
+                             // Orma
+                             '**/*_Deleter.class',
+                             '**/*_Relation.class',
+                             '**/*_Selector.class',
+                             '**/*_Updater.class',
+                             '**/*_Schema.class',
+                             '**/*_Schema$*.class',
+                             '**/OrmaDatabase.class',
+                             '**/OrmaDatabase$Builder.class',
+        ]
 
-        variant.assemble.dependsOn "lint$variantName"  // 全てのビルドバリアントに置いてLintの実行は必須化する
+        variant.assemble.dependsOn "lint$variantName"
+        // 全てのビルドバリアントに置いてLintの実行は必須化する
 
         /*
          * PMD
@@ -295,19 +302,20 @@ android {
                 html.enabled = true
             }
 
-            // variant.javaCompile.source does not work
-            // traverses from starting point
             sourceDirectories = files(android.sourceSets.main.java.srcDirs)
-            executionData = files("${buildDir}/jacoco/test${variantName}UnitTest.exec")
-            classDirectories = fileTree(dir: variant.javaCompiler.destinationDir,
-                    excludes: autoGenerated)
+            executionData =
+                    files("${buildDir}/jacoco/test${variantName}UnitTest.exec")
+            classDirectories =
+                    fileTree(dir: android.sourceSets.main.java.srcDirs,
+                            excludes: autoGenerated)
         }
 
         /*
          * Findbugs
          *   see: https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.FindBugsExtension.html
          */
-        task("findbugs$variantName", type: FindBugs, dependsOn: "assemble$variantName") {
+        task("findbugs$variantName", type: FindBugs,
+                dependsOn: "assemble$variantName") {
             group 'Reporting'
             description "Generate ${variantName} Findbugs reports."
 
@@ -319,21 +327,24 @@ android {
 
             effort = 'max'
             reportLevel = 'low'
-            source = files(variant.javaCompiler.source)
-            classpath = files(configurations.compile.files)
-            classes = fileTree(dir: android.sourceSets.main.java.srcDirs,
+
+            source = files(android.sourceSets.main.java.srcDirs)
+            classes = fileTree(dir: "$project.buildDir/intermediates/classes",
                     excludes: autoGenerated)
+            classpath = files(configurations.compile.files)
+            excludeFilter = rootProject.file('config/findbugs.xml')
         }
 
         /*
          * CheckStyle
          *   see: https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.Checkstyle.html
          */
-        task("checkstyle$variantName", type: Checkstyle, dependsOn: "assemble$variantName") {
+        task("checkstyle$variantName", type: Checkstyle,
+                dependsOn: "assemble$variantName") {
             group 'Reporting'
             description "Generate ${variantName} Checkstyle reports."
 
-            showViolations true         // CheckStyle解析結果をStdOutに出力する
+            showViolations true  // CheckStyle解析結果をStdOutに出力する
             ignoreFailures = true
 
             reports.xml.enabled = true
@@ -347,13 +358,24 @@ android {
 }
 
 dependencies {
-    androidJacocoAgent 'org.jacoco:org.jacoco.agent:0.7.2.201409121644' // https://github.com/jacoco/jacoco/issues/288
-    androidJacocoAnt 'org.jacoco:org.jacoco.agent:0.7.2.201409121644' // https://github.com/jacoco/jacoco/issues/288
+    // https://github.com/jacoco/jacoco/issues/288
+    androidJacocoAgent 'org.jacoco:org.jacoco.agent:0.7.2.201409121644'
+
+    // https://github.com/jacoco/jacoco/issues/288
+    androidJacocoAnt 'org.jacoco:org.jacoco.agent:0.7.2.201409121644'
+
     checkstyle 'com.puppycrawl.tools:checkstyle:6.14.1'
+
     errorprone 'com.google.errorprone:error_prone_core:2.0.7'
+
     findbugs 'com.google.code.findbugs:findbugs:3.0.1'
-    jacocoAgent 'org.jacoco:org.jacoco.agent:0.7.2.201409121644' // https://github.com/jacoco/jacoco/issues/288
-    jacocoAnt 'org.jacoco:org.jacoco.ant:0.7.2.201409121644' // https://github.com/jacoco/jacoco/issues/288
+
+    // https://github.com/jacoco/jacoco/issues/288
+    jacocoAgent 'org.jacoco:org.jacoco.agent:0.7.2.201409121644'
+
+    // https://github.com/jacoco/jacoco/issues/288
+    jacocoAnt 'org.jacoco:org.jacoco.ant:0.7.2.201409121644'
+
     pmd 'net.sourceforge.pmd:pmd-java:5.4.1'
 }
 

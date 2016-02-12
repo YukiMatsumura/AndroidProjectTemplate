@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- 
+        Java要素名マッチング
+            Class, Source, MethodまたはFieldのname属性が文字"~"で始まる場合,
+            属性値の残りの部分をJavaの正規表現として解釈する.
+            see: https://docs.oracle.com/javase/jp/6/api/java/util/regex/Pattern.html
+        
+        留意事項
+            バグ報告の中には2個以上のクラスを保持しているものがある.
+            DE(dropped exception:例外の無視)などは, 例外の無視が発生したメソッドを持っているクラスと,
+            無視された例外の型を表すクラスの両方を含んだ形で報告される. 
+            このバグ報告を抑止したい場合は2つのクラスをフィルターアウトする必要がある. 
+            see: http://findbugs.sourceforge.net/ja/manual/filter.html
+        
+        Match
+            Matchは除外条件の論理和(or)として機能する.
+     -->
+    <Match>
+        <Class name="~.*Test" />
+    </Match>
+    <Match>
+        <Class name="~yuki\.android\.ormasample\.test\..*" />
+    </Match>
+</FindBugsFilter>

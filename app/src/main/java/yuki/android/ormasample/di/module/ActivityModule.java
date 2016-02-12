@@ -30,7 +30,8 @@ public class ActivityModule {
 
     @Provides
     @ActivityScope
-    HistoryViewController provideHistoryViewController(HistoryViewPresenter presenter, HistoryViewUseCase useCase) {
+    HistoryViewController provideHistoryViewController(
+            HistoryViewPresenter presenter, HistoryViewUseCase useCase) {
         return new HistoryViewController(presenter, useCase);
     }
 
@@ -44,6 +45,7 @@ public class ActivityModule {
     @ActivityScope
     HistoryViewUseCase provideHistoryViewUseCase(HistoryRepository repository,
             ThreadExecutor executor, PostExecutionThread postExecutionThread) {
-        return new HistoryViewUseCaseImpl(repository, executor, postExecutionThread);
+        return new HistoryViewUseCaseImpl(repository, executor,
+                postExecutionThread);
     }
 }

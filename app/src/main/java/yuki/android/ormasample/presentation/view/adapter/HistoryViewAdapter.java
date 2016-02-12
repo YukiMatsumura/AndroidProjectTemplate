@@ -15,7 +15,8 @@ import butterknife.ButterKnife;
 import yuki.android.ormasample.R;
 import yuki.android.ormasample.data.entity.History;
 
-public class HistoryViewAdapter extends RecyclerView.Adapter<HistoryViewAdapter.HistoryViewHolder> {
+public class HistoryViewAdapter
+        extends RecyclerView.Adapter<HistoryViewAdapter.HistoryViewHolder> {
 
     @NonNull
     private List<History> histories = Collections.emptyList();
@@ -27,7 +28,9 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<HistoryViewAdapter.
 
     public void setHistory(List<History> histories) {
         this.histories =
-                (histories != null) ? histories : Collections.<History>emptyList();
+                (histories != null)
+                        ? histories
+                        : Collections.<History>emptyList();
         this.notifyDataSetChanged();
     }
 
@@ -37,7 +40,8 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<HistoryViewAdapter.
     }
 
     @Override
-    public HistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public HistoryViewHolder onCreateViewHolder(ViewGroup parent,
+            int viewType) {
         final View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item_history, parent, false);
         return new HistoryViewHolder(itemView);

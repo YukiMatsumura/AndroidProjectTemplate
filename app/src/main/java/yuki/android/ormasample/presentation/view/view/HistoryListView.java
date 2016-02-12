@@ -17,14 +17,14 @@ import yuki.android.ormasample.di.component.ActivityComponent;
 import yuki.android.ormasample.presentation.controller.HistoryViewController;
 import yuki.android.ormasample.presentation.view.adapter.HistoryViewAdapter;
 
-import static yuki.android.ormasample.presentation.presenter.HistoryViewPresenter.RemovedHistoryEvent;
-import static yuki.android.ormasample.presentation.presenter.HistoryViewPresenter.ShowHistoryEvent;
+import static yuki.android.ormasample.presentation.presenter.HistoryViewPresenter.*;
 
 public class HistoryListView extends RecyclerView {
 
-    HistoryViewController historyViewController;
+    private HistoryViewController historyViewController;
 
-    private CompositeSubscription presenterSubscriber = new CompositeSubscription();
+    private CompositeSubscription presenterSubscriber
+            = new CompositeSubscription();
 
     // TODO generics filter presentation event?
     private Action1<Object> presentationEventAction = new Action1<Object>() {
@@ -36,7 +36,9 @@ public class HistoryListView extends RecyclerView {
 
             } else if (o instanceof RemovedHistoryEvent) {
                 RemovedHistoryEvent e = (RemovedHistoryEvent) o;
-                int position = HistoryListView.this.findViewHolderForItemId(e.getItemId()).getAdapterPosition();
+                int position = HistoryListView.this
+                        .findViewHolderForItemId(e.getItemId())
+                        .getAdapterPosition();
                 listAdapter.removeItem(position);
             }
         }
@@ -52,7 +54,8 @@ public class HistoryListView extends RecyclerView {
         this(context, attrs, 0);
     }
 
-    public HistoryListView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public HistoryListView(Context context, @Nullable AttributeSet attrs,
+            int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -65,8 +68,10 @@ public class HistoryListView extends RecyclerView {
             // OnClickリスナーの設定をAdapterから排除するための実装
             //    http://qiita.com/takahirom/items/2fd51170ddc5f0e80a36
             @Override
-            public HistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                final HistoryViewHolder vh = super.onCreateViewHolder(parent, viewType);
+            public HistoryViewHolder onCreateViewHolder(ViewGroup parent,
+                    int viewType) {
+                final HistoryViewHolder vh = super
+                        .onCreateViewHolder(parent, viewType);
                 vh.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -78,7 +83,8 @@ public class HistoryListView extends RecyclerView {
         };
 
         // Swipe & Drag リスナーを設定
-        new ItemTouchHelper(new HistoryTouchCallback()).attachToRecyclerView(this);
+        new ItemTouchHelper(new HistoryTouchCallback())
+                .attachToRecyclerView(this);
 
         this.setAdapter(listAdapter);
         this.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -98,7 +104,8 @@ public class HistoryListView extends RecyclerView {
     private ActivityComponent getComponent() {
         Context context = getContext();
         if (!(context instanceof HasActivityComponent)) {
-            throw new IllegalArgumentException("HistoryListView context has not ActivityComponent");
+            throw new IllegalArgumentException(
+                    "HistoryListView context has not ActivityComponent");
         }
         return ((HasActivityComponent) context).getComponent();
     }
@@ -119,17 +126,20 @@ public class HistoryListView extends RecyclerView {
 
     private class HistoryTouchCallback extends ItemTouchHelper.SimpleCallback {
 
-        public HistoryTouchCallback() {
+        HistoryTouchCallback() {
             super(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT);
         }
 
         @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+        public boolean onMove(RecyclerView recyclerView,
+                RecyclerView.ViewHolder viewHolder,
+                RecyclerView.ViewHolder target) {
             return false;
         }
 
         @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+        public void onSwiped(RecyclerView.ViewHolder viewHolder,
+                int direction) {
             onHistoryItemSwipe(viewHolder.getAdapterPosition());
         }
     }

@@ -39,21 +39,21 @@ import rx.subjects.Subject;
  */
 public class BusStream {
 
-    private final Subject<Object, Object> STREAM =
+    private final Subject<Object, Object> stream =
             new SerializedSubject<>(PublishSubject.create());
 
     public BusStream() {
     }
 
     public void send(Object o) {
-        STREAM.onNext(o);
+        stream.onNext(o);
     }
 
     public Observable<Object> toObservable() {
-        return STREAM;
+        return stream;
     }
 
     public boolean hasObservers() {
-        return STREAM.hasObservers();
+        return stream.hasObservers();
     }
 }

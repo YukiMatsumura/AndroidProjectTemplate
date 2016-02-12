@@ -17,7 +17,8 @@ public class RepositoryErrorBundle implements ErrorBundle {
 
     @Override
     public String getErrorMessage() {
-        return this.exception != null ?
-                this.exception.getMessage() : "";
+        return this.exception != null
+                ? this.exception.getMessage()
+                : "";
     }
 }

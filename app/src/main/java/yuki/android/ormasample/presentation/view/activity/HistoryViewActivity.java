@@ -15,8 +15,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import yuki.android.ormasample.App;
 import yuki.android.ormasample.R;
-import yuki.android.ormasample.crosscut.i18n.DateTime;
-import yuki.android.ormasample.data.entity.History;
 import yuki.android.ormasample.di.HasActivityComponent;
 import yuki.android.ormasample.di.component.ActivityComponent;
 import yuki.android.ormasample.di.component.DaggerActivityComponent;
@@ -47,7 +45,8 @@ public class HistoryViewActivity extends AppCompatActivity
     @NonNull
     public ActivityComponent getComponent() {
         if (activityComponent == null) {
-            throw new NullPointerException("Request ActivityComponent before initialized.");
+            throw new NullPointerException(
+                    "Request ActivityComponent before initialized.");
         }
         return activityComponent;
     }
@@ -85,11 +84,14 @@ public class HistoryViewActivity extends AppCompatActivity
     }
 
     public void showHistoryCount(Integer count) {
-        Snackbar.make(rootView, "History total count is " + count, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(rootView, "History total count is " + count,
+                Snackbar.LENGTH_LONG).show();
     }
 
     @OnClick(R.id.view_fab)
     public void onFabClick(FloatingActionButton fab) {
-        presenter.addHistory(new History().setLabel("Test").setActiveDate(DateTime.now()));
+        // TODO: リファクタリングの続き. Domain層にmodelとmapperを追加すること
+//        presenter.addHistory(
+//                new History().setLabel(-1L, DateTimeUtils.now(), "Test"));
     }
 }

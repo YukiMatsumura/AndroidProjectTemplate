@@ -12,7 +12,8 @@ import yuki.android.ormasample.presentation.presenter.HistoryViewPresenter;
 import yuki.android.ormasample.presentation.view.activity.HistoryViewActivity;
 
 @ActivityScope
-@Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)
+@Component(dependencies = ApplicationComponent.class,
+        modules = ActivityModule.class)
 public interface ActivityComponent {
 
     // Dagger2による@Injectによるインジェクションを有効にするには具象クラスを受け取る必要がある.

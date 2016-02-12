@@ -51,29 +51,32 @@ public class HistoryViewController implements Controller {
      * このAPIは間近数件のヒストリ情報とヒストリの件数を取得する作用を持つ.
      */
     public void showHistory() {
-        historyViewUseCase.showLatestHistory(new DefaultSubscriber<List<History>>() {
-            @Override
-            public void onNext(List<History> histories) {
-                historyViewPresenter.onShowHistory(histories);
-            }
-        });
-        historyViewUseCase.getHistoryCount(new DefaultSingleSubscriber<Integer>() {
+        historyViewUseCase
+                .showLatestHistory(new DefaultSubscriber<List<History>>() {
+                    @Override
+                    public void onNext(List<History> histories) {
+                        historyViewPresenter.onShowHistory(histories);
+                    }
+                });
+        historyViewUseCase
+                .getHistoryCount(new DefaultSingleSubscriber<Integer>() {
 
-            @Override
-            public void onSuccess(Integer count) {
-                // TODO: show history count
-                // historyViewPresenter.showHistoryCount(count);
-            }
-        });
+                    @Override
+                    public void onSuccess(Integer count) {
+                        // TODO: show history count
+                        // historyViewPresenter.showHistoryCount(count);
+                    }
+                });
     }
 
     public void removeHistoryItem(@NonNull final History history) {
-        historyViewUseCase.removeHistory(history.id, new DefaultSingleSubscriber<Integer>() {
-            @Override
-            public void onSuccess(Integer count) {
-                historyViewPresenter.onRemovedHistory(history.id);
-            }
-        });
+        historyViewUseCase.removeHistory(history.id,
+                new DefaultSingleSubscriber<Integer>() {
+                    @Override
+                    public void onSuccess(Integer count) {
+                        historyViewPresenter.onRemovedHistory(history.id);
+                    }
+                });
     }
 
     public void addHistory(@NonNull History history) {

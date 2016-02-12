@@ -32,11 +32,11 @@ public class HistoryListView extends RecyclerView {
         public void call(Object o) {
             if (o instanceof ShowHistoryEvent) {
                 ShowHistoryEvent e = (ShowHistoryEvent) o;
-                listAdapter.setHistory(e.histories);
+                listAdapter.setHistory(e.getHistories());
 
             } else if (o instanceof RemovedHistoryEvent) {
                 RemovedHistoryEvent e = (RemovedHistoryEvent) o;
-                int position = HistoryListView.this.findViewHolderForItemId(e.itemId).getAdapterPosition();
+                int position = HistoryListView.this.findViewHolderForItemId(e.getItemId()).getAdapterPosition();
                 listAdapter.removeItem(position);
             }
         }

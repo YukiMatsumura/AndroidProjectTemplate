@@ -42,16 +42,20 @@ public class DiModuleTest {
                 .build();
 
         assertThat("OrmaDatabaseが複数回インスタンス化されてApplicationScopeが適用されていない",
-                appComponent.ormaDatabase(), equalTo(appComponent.ormaDatabase()));
+                appComponent.ormaDatabase(),
+                equalTo(appComponent.ormaDatabase()));
 
         assertThat("HistoryRepositoryが複数回インスタンス化されてApplicationScopeが適用されていない",
-                appComponent.historyRepository(), equalTo(appComponent.historyRepository()));
+                appComponent.historyRepository(),
+                equalTo(appComponent.historyRepository()));
 
         assertThat("ThreadExecutorが複数回インスタンス化されてApplicationScopeが適用されていない",
-                appComponent.threadExecutor(), equalTo(appComponent.threadExecutor()));
+                appComponent.threadExecutor(),
+                equalTo(appComponent.threadExecutor()));
 
         assertThat("PostExecutionThreadが複数回インスタンス化されてApplicationScopeが適用されていない",
-                appComponent.postExecutionThread(), equalTo(appComponent.postExecutionThread()));
+                appComponent.postExecutionThread(),
+                equalTo(appComponent.postExecutionThread()));
     }
 
     @Test
@@ -60,28 +64,34 @@ public class DiModuleTest {
                 .applicationModule(new ApplicationModule(
                         (App) RuntimeEnvironment.application))
                 .build();
-        HistoryViewActivity historyViewActivity = Robolectric.buildActivity(HistoryViewActivity.class).create().get();
+        HistoryViewActivity historyViewActivity = Robolectric
+                .buildActivity(HistoryViewActivity.class).create().get();
         ActivityComponent activityComponent = DaggerActivityComponent.builder()
                 .applicationComponent(appComponent)
                 .activityModule(new ActivityModule(historyViewActivity))
                 .build();
 
         assertThat("Activityが複数回インスタンス化されてActivityScopeが適用されていない",
-                activityComponent.activity(), equalTo(activityComponent.activity()));
+                activityComponent.activity(),
+                equalTo(activityComponent.activity()));
 
         assertThat("HistoryViewUseCaseが複数回インスタンス化されてActivityScopeが適用されていない",
-                activityComponent.historyViewUseCase(), equalTo(activityComponent.historyViewUseCase()));
+                activityComponent.historyViewUseCase(),
+                equalTo(activityComponent.historyViewUseCase()));
 
-        HistoryViewActivity historyViewActivity2 = Robolectric.buildActivity(HistoryViewActivity.class).create().get();
+        HistoryViewActivity historyViewActivity2 = Robolectric
+                .buildActivity(HistoryViewActivity.class).create().get();
         ActivityComponent activityComponent2 = DaggerActivityComponent.builder()
                 .applicationComponent(appComponent)
                 .activityModule(new ActivityModule(historyViewActivity2))
                 .build();
 
         assertThat("ActivityがActivityScopeの範囲を超えて生存している",
-                activityComponent2.activity(), not(equalTo(activityComponent.activity())));
+                activityComponent2.activity(),
+                not(equalTo(activityComponent.activity())));
 
         assertThat("HistoryViewUseCaseがActivityScopeの範囲を超えて生存している",
-                activityComponent2.historyViewUseCase(), not(equalTo(activityComponent.historyViewUseCase())));
+                activityComponent2.historyViewUseCase(),
+                not(equalTo(activityComponent.historyViewUseCase())));
     }
 }

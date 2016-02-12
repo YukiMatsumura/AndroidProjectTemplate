@@ -13,8 +13,6 @@ import org.robolectric.annotation.Config;
 import android.content.Context;
 import android.test.suitebuilder.annotation.MediumTest;
 
-import java.util.List;
-
 import rx.SingleSubscriber;
 import rx.Subscriber;
 import yuki.android.ormasample.data.executor.TestCurrentThreadExecutor;
@@ -59,7 +57,8 @@ public class HistoryViewControllerTest {
                 new HistoryRepositoryImpl(TestOrmaUtils.getDatabase(context)),
                 new TestCurrentThreadExecutor(),
                 new TestPostCurrentThread()));
-        presenter = new HistoryViewController(new HistoryViewPresenter(), useCase);
+        presenter = new HistoryViewController(new HistoryViewPresenter(),
+                useCase);
     }
 
     @Test

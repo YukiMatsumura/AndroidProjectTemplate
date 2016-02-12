@@ -339,7 +339,7 @@ android {
             reports.xml.enabled = true
             reports.html.enabled = true
 
-            configFile = rootProject.file('config/checkstyle.xml')
+            configFile = rootProject.file('config/checkstyle-hard.xml')
             source = files(android.sourceSets.main.java.srcDirs)
             classpath = files(configurations.compile.files)
         }

@@ -32,7 +32,7 @@
     <!-- See http://checkstyle.sf.net/config_javadoc.html#JavadocPackage -->
     <module name="JavadocPackage">
         <property name="severity"
-                  value="info" />
+                  value="ignore" />
     </module>
 
     <!-- Checks whether files end with a new line.                        -->
@@ -77,19 +77,19 @@
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
         <module name="JavadocMethod">
             <property name="severity"
-                      value="info" />
+                      value="ignore" />
         </module>
         <module name="JavadocType">
             <property name="severity"
-                      value="info" />
+                      value="ignore" />
         </module>
         <module name="JavadocVariable">
             <property name="severity"
-                      value="info" />
+                      value="ignore" />
         </module>
         <module name="JavadocStyle">
             <property name="severity"
-                      value="info" />
+                      value="ignore" />
         </module>
 
         <!-- Checks for Naming Conventions.                  -->
@@ -110,7 +110,10 @@
 
         <!-- Checks for imports                              -->
         <!-- See http://checkstyle.sf.net/config_import.html -->
-        <module name="AvoidStarImport" />
+        <module name="AvoidStarImport">
+            <property name="allowStaticMemberImports"
+                      value="true" />
+        </module>
         <module name="IllegalImport" /> <!-- defaults to sun.* packages -->
         <module name="RedundantImport" />
         <module name="UnusedImports">
@@ -166,12 +169,8 @@
             <!-- 
                 IDEのサポートもあることから, 引数がメンバ変数が衝突することは許容する.
              -->
-            <property name="ignoreSetter"
-                      value="true" />
-            <property name="setterCanReturnItsClass"
-                      value="true" />
-            <property name="ignoreConstructorParameter"
-                      value="true" />
+            <property name="severity"
+                      value="ignore" />
         </module>
         <module name="IllegalInstantiation" />
         <module name="InnerAssignment" />
@@ -212,7 +211,7 @@
         </module>
         <module name="TodoComment">
             <property name="severity"
-                      value="warning" />
+                      value="info" />
         </module>
         <module name="UpperEll" />
 

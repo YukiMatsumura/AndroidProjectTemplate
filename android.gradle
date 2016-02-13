@@ -376,13 +376,15 @@ android {
         }
 
         /*
-         * 全ビルドバリアントのCheckタスクで静的解析チェックを必須化
+         * デバッグビルドのCheckタスクで静的解析チェックを必須化
          * Lintは標準でCheckタスクに依存関係を持っているので指定しない.
          */
-        check.dependsOn "pmd${variantName}"
-        check.dependsOn "findbugs${variantName}"
-        check.dependsOn "checkstyle${variantName}"
-        check.dependsOn "jacoco${variantName}Report"
+        if (variant.buildType.debuggable) {
+            check.dependsOn "pmd${variantName}"
+            check.dependsOn "findbugs${variantName}"
+            check.dependsOn "checkstyle${variantName}"
+            check.dependsOn "jacoco${variantName}Report"
+        }
     }
 }
 

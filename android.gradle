@@ -142,6 +142,16 @@ android {
         }
         release {
             // FIXME: プロダクト用署名の設定を環境変数(gradle.properties)に定義する
+            if (System.getenv("CI")) {
+                System.setProperty("KEYSTORE_FILE",
+                        System.getenv("KEYSTORE_FILE"))
+                System.setProperty("KEYSTORE_PASSWORD",
+                        System.getenv("KEYSTORE_PASSWORD"))
+                System.setProperty("KEY_ALIAS",
+                        System.getenv("KEY_ALIAS"))
+                System.setProperty("KEY_PASSWORD",
+                        System.getenv("KEY_PASSWORD"))
+            }
             storeFile file(System.properties["KEYSTORE_FILE"])
             storePassword System.properties["KEYSTORE_PASSWORD"]
             keyAlias System.properties["KEY_ALIAS"]

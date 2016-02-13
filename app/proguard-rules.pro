@@ -24,8 +24,8 @@
 
 
 # Need ButterKnife
--keep class butterknife.** { *; }
 -dontwarn butterknife.internal.**
+-keep class butterknife.** { *; }
 -keep class **$$ViewBinder { *; }
 -keepclasseswithmembernames class * {
     @butterknife.* <fields>;
@@ -51,3 +51,12 @@
 
 # Need Stetho
 -keep class com.facebook.stetho.** { *; }
+
+
+# Need Okio
+-dontwarn okio.**
+
+
+# Need Orma
+-dontwarn org.antlr.**
+-dontwarn org.abego.**

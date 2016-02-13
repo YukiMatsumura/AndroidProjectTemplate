@@ -184,10 +184,12 @@ android {
     // テスト実行設定
     //   see: http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.TestOptions.html
     //   see: http://tools.android.com/tech-docs/unit-testing-support
+    //   see: http://www.infoq.com/jp/news/2013/03/java-8-permgen-metaspace
     testOptions {
         unitTests.all {
-            jvmArgs '-XX:MaxPermSize=256m'  // All the usual Gradle options.
-            jvmArgs '-noverify'             // JSR-202.
+            if (JavaVersion.current() < JavaVersion.VERSION_1_8) {
+                jvmArgs '-XX:MaxPermSize=256m'  // Java7以前はPermGen問題に対処.
+            }
         }
 
         unitTests.returnDefaultValues = true

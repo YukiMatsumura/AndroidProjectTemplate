@@ -104,8 +104,7 @@ public class HistoryListView extends RecyclerView {
     private ActivityComponent getComponent() {
         Context context = getContext();
         if (!(context instanceof HasActivityComponent)) {
-            throw new IllegalArgumentException(
-                    "HistoryListView context has not ActivityComponent");
+            throw new IllegalArgumentException("HistoryListView context has not ActivityComponent");
         }
         return ((HasActivityComponent) context).getComponent();
     }

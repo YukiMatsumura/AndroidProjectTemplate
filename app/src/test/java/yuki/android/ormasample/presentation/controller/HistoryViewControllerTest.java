@@ -57,11 +57,11 @@ public class HistoryViewControllerTest {
                 new HistoryRepositoryImpl(TestOrmaUtils.getDatabase(context)),
                 new TestCurrentThreadExecutor(),
                 new TestPostCurrentThread()));
-        presenter = new HistoryViewController(new HistoryViewPresenter(),
-                useCase);
+        presenter = new HistoryViewController(new HistoryViewPresenter(), useCase);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void ヒストリの表示() throws Exception {
         presenter.showHistory();
 

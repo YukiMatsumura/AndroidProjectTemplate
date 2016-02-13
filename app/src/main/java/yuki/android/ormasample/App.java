@@ -17,12 +17,12 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Timber.plant(
-                BuildConfig.DEBUG ? new Timber.DebugTree() : new ReleaseTree());
+        Timber.plant(BuildConfig.DEBUG
+                ? new Timber.DebugTree()
+                : new ReleaseTree());
 
         component = DaggerApplicationComponent.builder()
-                .applicationModule(new ApplicationModule(this))
-                .build();
+                .applicationModule(new ApplicationModule(this)).build();
 
         // TODO: Stetho setup
         // Stetho.initializeWithDefaults(this);

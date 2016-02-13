@@ -147,7 +147,7 @@ android {
         if (releaseSettingGradleFile.exists()) {
             apply from: releaseSettingGradleFile, to: android
         } else {
-            println "\n!! NOT FOUND RELEASE KEYSTORE SETTING. SIGNING DEBUG KEYSTORE !!\n"
+            println "\n\t!! NOT FOUND RELEASE KEYSTORE SETTING. SIGNING DEBUG KEYSTORE !!\n"
             release {
                 storeFile = debug.storeFile
                 storePassword = debug.storePassword
@@ -166,8 +166,7 @@ android {
             minifyEnabled false    // ビルド高速化のためシュリンク処理はスキップする.
             shrinkResources false  // 同上
             proguardFiles(
-                    getDefaultProguardFile('proguard-android-optimize.txt'),
-                    'proguard-rules.pro')
+                    getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro')
             testCoverageEnabled true
             signingConfig signingConfigs.debug
         }
@@ -176,8 +175,7 @@ android {
             minifyEnabled true    // Code shrink
             shrinkResources true  // Resource shrink
             proguardFiles(
-                    getDefaultProguardFile('proguard-android-optimize.txt'),
-                    'proguard-rules.pro')
+                    getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro')
             testCoverageEnabled false
             signingConfig signingConfigs.debug  // FIXME: 商用KeyStoreに置き換えること
         }
@@ -368,7 +366,7 @@ android {
             reports.xml.enabled = true
             reports.html.enabled = true
 
-            configFile = rootProject.file('config/checkstyle-hard.xml')
+            configFile = rootProject.file('config/checkstyle-easy.xml')
             source = files(android.sourceSets.main.java.srcDirs)
             classpath = files(configurations.compile.files)
         }

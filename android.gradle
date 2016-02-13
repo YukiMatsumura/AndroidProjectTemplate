@@ -410,6 +410,19 @@ task pullCodeStyleSettings(type: Exec) {
     executable "./script/pullCodeStyleSettings.sh"
 }
 
+// プロジェクトの開発環境をチェックする
+task checkEnvironmentSettings() {
+    group 'Verification'
+    description "Check environment settings"
+
+    // Ormaはaptによるコード生成にJava1.8を要求する
+    if (JavaVersion.current() < JavaVersion.VERSION_1_8) {
+        println("\n\tYou will need Java 1.8 or higher if you use Orma.")
+        println("\tCurrent Java version is really old. Found ver. " + JavaVersion.current() + ".\n")
+        throw new GradleException("Please Update your Java.")
+    }
+}
+
 /*
  * その他導入済みプラグイン
  * 

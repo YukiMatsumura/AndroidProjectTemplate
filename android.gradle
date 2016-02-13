@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+apply plugin: 'com.vanniktech.android.apk.size'
+apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'com.getkeepsafe.dexcount'
+
 // Android Gradle Known issues: http://tools.android.com/knownissues
 
 /*
@@ -34,22 +38,20 @@ apply plugin: 'com.android.application'
  * -------------------------------------------------------------------
  */
 
-apply plugin: 'net.ltgt.errorprone'
-apply plugin: 'com.github.ben-manes.versions'
-
 /*
  * Javaコンパイル全般.
  *   より厳格なJavaコンパイルを実行するには各compileArgsのコメントアウトを外す.
  *   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.compile.JavaCompile.html
+ * 
+ * Javaコンパイルオプションの設定.
+ *   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.compile.CompileOptions.html
  */
 tasks.withType(JavaCompile) {
-    // Javaコンパイルオプションの設定.
-    //   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.compile.CompileOptions.html
     configure(options) {
-//        compilerArgs << '-Xlint:all'        // Turn on all warnings
-//        compilerArgs << '-Xlint:-options'   // Turn off 'missing' bootclasspath warning
-//        compilerArgs << '-Xlint:-path'      // Turn off アーカイブ・ファイルの予期しない拡張子(aar)
-//        compilerArgs << '-Werror'           // Turn warnings into errors
+        // compilerArgs << '-Xlint:all'        // Turn on all warnings
+        // compilerArgs << '-Xlint:-options'   // Turn off 'missing' bootclasspath warning
+        // compilerArgs << '-Xlint:-path'      // Turn off アーカイブ・ファイルの予期しない拡張子(aar)
+        // compilerArgs << '-Werror'           // Turn warnings into errors
         compilerArgs << '-Xdiags:verbose'   // Turn on verbose
         deprecation = true
         encoding = 'UTF-8'
@@ -60,10 +62,11 @@ tasks.withType(JavaCompile) {
 /*
  * JUnit(3.8.x or 4.x)の設定.
  *   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html
+ * 
+ * テストFail時のログ出力設定.
+ *   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.logging.TestLoggingContainer.html
  */
 tasks.withType(Test) {
-    // テストFail時のログ出力設定.
-    //   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.logging.TestLoggingContainer.html
     testLogging {
         // Test実行時のログ設定.
         exceptionFormat 'full'    // Full display of exceptions. (or 'short')
@@ -77,10 +80,11 @@ tasks.withType(Test) {
 /*
  * Javadocの設定.
  *   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Javadoc.html
+ *  
+ * Javadocオプション.
+ *   see: https://docs.gradle.org/current/javadoc/org/gradle/external/javadoc/StandardJavadocDocletOptions.html
  */
 tasks.withType(Javadoc) {
-    // Javadocオプション.
-    //  see: https://docs.gradle.org/current/javadoc/org/gradle/external/javadoc/StandardJavadocDocletOptions.html
     configure(options) {
         header = name
         author = true
@@ -124,47 +128,48 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
-    // apk署名設定. 
+    // APK署名設定.
+    //   see: http://tools.android.com/tech-docs/new-build-system/user-guide#TOC-Signing-Configurations
     //   see: http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.SigningConfig.html
-    signingConfigs.debug {
-        // FIXME: デバッグ用署名はプロジェクトルート配下に以下の内容で設置する
-        // 以下のデバッグ用署名設定はAndroid標準のもので $HOME/.android/debug.keystore に格納されている.
-        //   see: http://tools.android.com/tech-docs/new-build-system/user-guide#TOC-Signing-Configurations
-        storeFile rootProject.file('debug.keystore')
-        storePassword 'android'
-        keyAlias 'androiddebugkey'
-        keyPassword 'android'
-
-        // アプリケーションの署名について.
-        //   see: http://developer.android.com/intl/ja/tools/publishing/app-signing.html
+    //   see: http://developer.android.com/intl/ja/tools/publishing/app-signing.html
+    signingConfigs {
+        debug {
+            // FIXME: デバッグ用署名はプロジェクトルート配下に以下の内容で設置する
+            storeFile rootProject.file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        release {
+            // FIXME: プロダクト用署名の設定を環境変数(gradle.properties)に定義する
+            storeFile file(System.properties["KEYSTORE_FILE"])
+            storePassword System.properties["KEYSTORE_PASSWORD"]
+            keyAlias System.properties["KEY_ALIAS"]
+            keyPassword System.properties["KEY_PASSWORD"]
+        }
     }
 
     // ビルド種別毎の設定
     //   see: http://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.BuildType.html
+    //   see: http://tools.android.com/tech-docs/new-build-system/resource-shrinking
     buildTypes {
         debug {
             debuggable true
-
-            // ビルド高速化のためシュリンク処理はスキップする.
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled false    // ビルド高速化のためシュリンク処理はスキップする.
+            shrinkResources false  // 同上
             proguardFiles(
                     getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro')
-
             testCoverageEnabled true
+            signingConfig signingConfigs.debug
         }
         release {
             debuggable false
-
-            // 未使用リソースの自動削除設定.
-            //   see: http://tools.android.com/tech-docs/new-build-system/resource-shrinking
-            minifyEnabled true    // Code shrink by ProGuard
-            shrinkResources true  // Resource shrink by ProGuard
+            minifyEnabled true    // Code shrink
+            shrinkResources true  // Resource shrink
             proguardFiles(
                     getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro')
-
             testCoverageEnabled false
             signingConfig signingConfigs.debug  // FIXME: 商用KeyStoreに置き換えること
         }
@@ -176,10 +181,9 @@ android {
     testOptions {
         unitTests.all {
             jvmArgs '-XX:MaxPermSize=256m'  // All the usual Gradle options.
-            jvmArgs '-noverify'  // JSR-202.
+            jvmArgs '-noverify'             // JSR-202.
         }
 
-        // see: http://tools.android.com/tech-docs/unit-testing-support#TOC-Method-...-not-mocked.-
         unitTests.returnDefaultValues = true
     }
 
@@ -191,8 +195,8 @@ android {
         preDexLibraries = !project.hasProperty('disablePreDex')
 
         // FIXME: メモリが十分にあるならこれらのコメントアウトを外す
-//        dexInProcess = true   // 同プロセスでDEXコンパイルすることによるビルド高速化
-//        javaMaxHeapSize "4g"  // DEXコンパイルで必要なJavaヒープの確保
+        // dexInProcess = true   // 同プロセスでDEXコンパイルすることによるビルド高速化
+        // javaMaxHeapSize "4g"  // DEXコンパイルで必要なJavaヒープの確保
     }
 
     // Lintの設定
@@ -204,13 +208,22 @@ android {
         checkAllWarnings true
         warningsAsErrors true                   // Warnレベルの警告をErrorと同様に扱う
         abortOnError true                       // Errorが見つかった場合にビルドを失敗させる
+        lintConfig rootProject.file('config/lint.xml') // Lintチェックの無効化設定.
+    }
 
-        // Lintチェックの無効化設定.
-        lintConfig rootProject.file('config/lint.xml')
+    // DexCountの設定
+    //   see: https://github.com/KeepSafe/dexcount-gradle-plugin
+    dexcount {
+        format = "list"
+        includeClasses = false
+        includeFieldCount = true
+        includeTotalMethodCount = false
+        orderByMethodCount = false
+        verbose = true
     }
 
     packagingOptions {
-        // 以下は外部ライブラリを取り込み, パッケージ化する際の競合を解消する設定
+        // 外部ライブラリを取り込み, パッケージ化する際の競合を解消する設定
         exclude '.readme'
         exclude 'LICENSE.txt'
         exclude 'META-INF/DEPENDENCIES'
@@ -241,8 +254,7 @@ android {
 
         def variantName = variant.name.capitalize()
 
-        // 自動生成ファイルの登録.
-        // 静的解析チェックツールの実行時にこれらの自動生成ファイルはチェック対象外とする.
+        // 自動生成ファイルは静的解析チェックの対象外とする.
         def autoGenerated = ['**/R.class',
                              '**/R$*.class',
                              '**/Manifest*.*',
@@ -265,8 +277,7 @@ android {
                              '**/OrmaDatabase$Builder.class',
         ]
 
-        variant.assemble.dependsOn "lint$variantName"
-        // 全てのビルドバリアントに置いてLintの実行は必須化する
+        variant.assemble.dependsOn "lint$variantName"  // 全ビルドバリアントでLintを必須化
 
         /*
          * PMD
@@ -327,7 +338,6 @@ android {
 
             effort = 'max'
             reportLevel = 'low'
-
             source = files(android.sourceSets.main.java.srcDirs)
             classes = fileTree(dir: "$project.buildDir/intermediates/classes",
                     excludes: autoGenerated)
@@ -366,8 +376,6 @@ dependencies {
 
     checkstyle 'com.puppycrawl.tools:checkstyle:6.14.1'
 
-    errorprone 'com.google.errorprone:error_prone_core:2.0.7'
-
     findbugs 'com.google.code.findbugs:findbugs:3.0.1'
 
     // https://github.com/jacoco/jacoco/issues/288
@@ -386,10 +394,30 @@ dependencies {
  */
 
 // プロジェクトのCode Style設定ファイルのダウンロードスクリプトを実行する.
-task pullCodeStyle(type: Exec) {
+task pullCodeStyleSettings(type: Exec) {
     group 'Other'
     description "Download and Settings code style."
 
     workingDir './'
-    executable "./script/pullCodeStyle.sh"
+    executable "./script/pullCodeStyleSettings.sh"
 }
+
+/*
+ * その他導入済みプラグイン
+ * 
+ *   - DependencyUpdates: 使用しているライブラリの最新バージョンチェック
+ *       $ ./gradlew dependencyUpdates
+ * 
+ *   - ApkSize: APKのサイズを出力する
+ *       $ ./gradlew assembleDebug
+ *         output:
+ *           "Total APK Size in app-dev-debug in bytes: XXXX"
+ *           (and reported to outputs/apksize/*.cvs)
+ * 
+ *   - DexCount: メソッド数を出力する
+ *       $ ./gradlew assembleDebug
+ *         output:
+ *           "Total methods in app-dev-debug.apk: XXXX"
+ *           "Total fields in app-dev-debug.apk: XXXX"
+ *           (and reported to outputs/dexcount/*.txt)
+ */

@@ -2,7 +2,7 @@ general:
   build_dir: ./
 machine:
   java:
-    version: openjdk8
+    version: oraclejdk8
   environment:
     ANDROID_HOME: /usr/local/android-sdk-linux
     # # Your build hit the 4G memory limit

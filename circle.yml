@@ -17,7 +17,7 @@ dependencies:
     - echo y | android update sdk --no-ui --all --filter "extra-google-m2repository,extra-android-m2repository,android-23,build-tools-23.0.1"
 test:
   override:
-    - ./gradlew clean assembleDebug -PdisablePreDex
+    - ./gradlew clean check -PdisablePreDex
     # # start the emulator
     # - emulator -avd circleci-android22 -no-audio -no-window:
     #     background: true
@@ -26,8 +26,8 @@ test:
     # - circle-android wait-for-boot
     # # run tests  against the emulator.
     # - ./gradlew connectedAndroidTest
-    - cp -r ./app/build/outputs $CIRCLE_ARTIFACTS
   post:
+    - cp -r ./app/build/outputs/* $CIRCLE_ARTIFACTS
     - cp -r ./app/build/reports/* $CIRCLE_TEST_REPORTS/
 # deployment:
 #  master:

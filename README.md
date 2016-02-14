@@ -34,7 +34,7 @@ DexCount
 ApkSize  
 : APKのバイナリサイズを報告するプラグイン.  
 
-GradleVersion
+GradleVersion  
 : 依存しているライブラリの最新バージョンをチェックするプラグイン.  
 
 
@@ -60,6 +60,7 @@ Robert Cecil Martin氏による[Clean Architecture](https://blog.8thlight.com/un
  - Android support annotations
  - Android design support lib.
  - Android support testing lib.
+
 
 ## android.gradleの適用
 

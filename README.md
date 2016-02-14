@@ -1,8 +1,16 @@
 # Android Project Template
 
-## 静的解析ツールとユーティリティの導入
+## はじめに
 
-静的解析ツールと各種ユーティリティは`/android.gradle`で定義されている.
+Androidプロジェクトで頻繁に使用されるプラグインの導入ソースプログラムをプロジェクト作成の都度書き直すのは非効率的である.  
+そういった繰り返し書かれるプログラムをこのプロジェクトにまとめ, 新規プロジェクト作成の際にはこれをコピーすることで対応できるようにする.  
+
+また, Clean Architectureのソフトウェアプログラムにおいて最低限必要となる雛形もここで定義する.  
+
+### 導入されるプラグイン
+
+主要な静的解析ツールと各種ユーティリティが導入される.  
+プラグインの導入ソースコード(gralde)は`/android.gradle`で定義されている.  
 これに含まれるプラグインは次の通り.
 
 FindBugs  
@@ -26,7 +34,37 @@ DexCount
 ApkSize  
 : APKのバイナリサイズを報告するプラグイン.  
 
-`android.gradle`をアプリケーションに導入するために, まずプロジェクトルートで下記を宣言する.
+GradleVersion
+: 依存しているライブラリの最新バージョンをチェックするプラグイン.  
+
+
+### Clean Architecture
+
+Robert Cecil Martin氏による[Clean Architecture](https://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html)のアプローチを参考に実装している.  
+
+### ライブラリ
+
+ - RxAndroid
+ - RxJava
+ - Dagger2
+ - ButterKnife
+ - Orma
+ - Timber
+ - Stetho
+ - Okhttp
+ - Robolectric
+ - JUnit
+ - Mockito
+ - Hamcrest
+ - Android support Appcompat-v7
+ - Android support annotations
+ - Android design support lib.
+ - Android support testing lib.
+
+## android.gradleの適用
+
+`android.gradle`をアプリケーションに適用するには2ステップ必要.  
+まずプロジェクトルートで下記を宣言する.  
 
 ```gradle
 buildscript {
@@ -50,6 +88,41 @@ buildscript {
 ```gradle
 apply from: rootProject.file('android.gradle')
 ```
+
+### 追加・変更されるタスク
+
+findbugs{variantName}
+: FindBugsによる静的解析を指定のビルドバリアントに対して実行する.  
+
+pmd{variantName}  
+: PMDによる静的解析を指定のビルドバリアントに対して実行する.  
+
+checkstyle{variantName}
+: CheckStyleによる体裁チェックを指定のビルドバリアントに対して実行する.    
+
+lint{variantName}
+: Lintによる静的解析を指定のビルドバリアントに対して実行する.  
+
+jacoco{variantName}Report
+: Jacocoによるカバレッジレポートを指定のビルドバリアントに対して実行する.  
+
+count{variantName}Methods
+: DexCountによるメソッド数の計測を指定のビルドバリアントに対して実行する.  
+
+size{variantName}  
+: ApkSizeによるAPKサイズの計測を指定のビルドバリアントに対して実行する.  
+
+dependencyUpdates
+: 依存しているライブラリの最新バージョンチェックを実行する.  
+
+check
+: デバッガブルなビルドタイプの場合, いくつかの静的解析チェックを追加で行う  
+
+pullCodeStyleSettings
+: AndroidStudioに適用されるコードスタイル設定ファイルをダウンロードする  
+
+checkEnvironmentSettings
+: 開発環境の設定確認用タスク  
 
 ## コンフィギュレーション
 

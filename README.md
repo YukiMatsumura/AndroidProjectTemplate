@@ -92,37 +92,37 @@ apply from: rootProject.file('android.gradle')
 
 ### 追加・変更されるタスク
 
-findbugs{variantName}
-: FindBugsによる静的解析を指定のビルドバリアントに対して実行する.  
+findbugs{variantName}  
+: FindBugsによる静的解析を指定のビルドバリアントに対して実行する  
 
 pmd{variantName}  
-: PMDによる静的解析を指定のビルドバリアントに対して実行する.  
+: PMDによる静的解析を指定のビルドバリアントに対して実行する  
 
-checkstyle{variantName}
-: CheckStyleによる体裁チェックを指定のビルドバリアントに対して実行する.    
+checkstyle{variantName}  
+: CheckStyleによる体裁チェックを指定のビルドバリアントに対して実行する  
 
-lint{variantName}
-: Lintによる静的解析を指定のビルドバリアントに対して実行する.  
+lint{variantName}  
+: Lintによる静的解析を指定のビルドバリアントに対して実行する  
 
-jacoco{variantName}Report
-: Jacocoによるカバレッジレポートを指定のビルドバリアントに対して実行する.  
+jacoco{variantName}Report  
+: Jacocoによるカバレッジレポートを指定のビルドバリアントに対して実行する  
 
-count{variantName}Methods
-: DexCountによるメソッド数の計測を指定のビルドバリアントに対して実行する.  
+count{variantName}Methods  
+: DexCountによるメソッド数の計測を指定のビルドバリアントに対して実行する  
 
 size{variantName}  
-: ApkSizeによるAPKサイズの計測を指定のビルドバリアントに対して実行する.  
+: ApkSizeによるAPKサイズの計測を指定のビルドバリアントに対して実行する  
 
-dependencyUpdates
-: 依存しているライブラリの最新バージョンチェックを実行する.  
+dependencyUpdates  
+: 依存しているライブラリの最新バージョンチェックを実行する  
 
-check
+check  
 : デバッガブルなビルドタイプの場合, いくつかの静的解析チェックを追加で行う  
 
-pullCodeStyleSettings
+pullCodeStyleSettings  
 : AndroidStudioに適用されるコードスタイル設定ファイルをダウンロードする  
 
-checkEnvironmentSettings
+checkEnvironmentSettings  
 : 開発環境の設定確認用タスク  
 
 ## コンフィギュレーション

@@ -177,7 +177,7 @@ android {
             proguardFiles(
                     getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro')
             testCoverageEnabled false
-            signingConfig signingConfigs.debug  // FIXME: 商用KeyStoreに置き換えること
+            signingConfig signingConfigs.release
         }
     }
 
@@ -364,12 +364,13 @@ android {
             group 'Reporting'
             description "Generate ${variantName} Checkstyle reports."
 
-            showViolations true  // CheckStyle解析結果をStdOutに出力する
             ignoreFailures = true
+            reports {
+                xml.enabled = true
+                html.enabled = true
+            }
 
-            reports.xml.enabled = true
-            reports.html.enabled = true
-
+            showViolations true  // CheckStyle解析結果をStdOutに出力する
             configFile = rootProject.file('config/checkstyle-easy.xml')
             source = files(android.sourceSets.main.java.srcDirs)
             classpath = files(configurations.compile.files)
@@ -419,7 +420,7 @@ task pullCodeStyleSettings(type: Exec) {
     group 'Other'
     description "Download and Settings code style."
 
-    workingDir './'
+    workingDir rootProject.rootDir
     executable "./script/pullCodeStyleSettings.sh"
 }
 
@@ -433,6 +434,13 @@ task checkEnvironmentSettings() {
         println("\n\tYou will need Java 1.8 or higher if you use Orma.")
         println("\tCurrent Java version is really old. Found ver. " + JavaVersion.current() + ".\n")
         throw new GradleException("Please Update your Java.")
+    }
+
+    // gitignoreの簡易チェック
+    String gitignore = file("${rootProject.rootDir}/.gitignore").text
+    if (!gitignore.contains("/secret")) {
+        println("\n\tSecret folder is not registered in .gitignore.\n")
+        throw new GradleException("Please registered /secret path to .gitignore.")
     }
 }
 

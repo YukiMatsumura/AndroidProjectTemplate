@@ -20,6 +20,6 @@
         <Class name="~.*Test" />
     </Match>
     <Match>
-        <Class name="~yuki\.android\.ormasample\.test\..*" />
+        <Class name="~yuki\.android\.template\.test\..*" />
     </Match>
 </FindBugsFilter>

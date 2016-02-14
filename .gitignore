@@ -36,4 +36,4 @@ build/
 obj/
 
 # FIXME: 以下のファイルはgit管理対象外. 実運用時はコメントアウトを外すこと
-/secret
+#/secret

@@ -46,6 +46,7 @@ Robert Cecil Martin氏による[Clean Architecture](https://blog.8thlight.com/un
 
  - RxAndroid
  - RxJava
+ - Retrolambda
  - Dagger2
  - ButterKnife
  - Orma

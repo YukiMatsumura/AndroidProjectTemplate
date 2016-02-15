@@ -17,6 +17,7 @@ project.ext {
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
     dependencies {
 
@@ -38,6 +39,9 @@ buildscript {
 
         // RxJava observable logger
         classpath "com.fernandocejas.frodo:frodo-plugin:0.8.2"
+
+        // Retrolambda
+        classpath 'me.tatarka:gradle-retrolambda:3.3.0-beta4'
     }
 }
 

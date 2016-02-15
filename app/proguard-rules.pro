@@ -60,3 +60,7 @@
 # Need Orma
 -dontwarn org.antlr.**
 -dontwarn org.abego.**
+
+
+# Retrolambda
+-dontwarn java.lang.invoke.*

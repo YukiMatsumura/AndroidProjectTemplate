@@ -116,18 +116,6 @@ android {
     compileSdkVersion = rootProject.ext.compileSdkVersion
     buildToolsVersion = rootProject.ext.buildToolsVersion
 
-    compileOptions {
-        encoding "UTF-8"
-
-        // sourceCompatibilityとtargetCompatibilityは同じVersionとすること.
-        // AndroidでJava7構文を使用するには下記の制約がつく.
-        //   - Try-with-resources構文: minSdkVersion >= 19
-        //   - その他の構文(multi-catch, diamond operator): minSdkVersion >= 8
-        //   - BuildToolsVersion >= 19
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-
     // APK署名設定.
     //   リリース用gradle(release.gradle)が存在しない場合はReleaseビルドでもデバッグ用署名を行う.
     //   see: http://tools.android.com/tech-docs/new-build-system/user-guide#TOC-Signing-Configurations

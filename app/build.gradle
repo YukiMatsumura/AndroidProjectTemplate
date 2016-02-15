@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'me.tatarka.retrolambda'
 
 apply plugin: 'com.jakewharton.hugo'  // generic method io logger
 apply plugin: 'com.fernandocejas.frodo'  // ReactiveX observable logger
@@ -32,6 +33,17 @@ android {
             // The actual minSdkVersion for the application.
             minSdkVersion rootProject.ext.minSdkVersion
         }
+    }
+    compileOptions {
+        encoding "UTF-8"
+
+        // sourceCompatibilityとtargetCompatibilityは同じVersionとすること.
+        // AndroidでJava7構文を使用するには下記の制約がつく.
+        //   - Try-with-resources構文: minSdkVersion >= 19
+        //   - その他の構文(multi-catch, diamond operator): minSdkVersion >= 8
+        //   - BuildToolsVersion >= 19
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     // noinspection GroovyAssignabilityCheck

@@ -3,7 +3,7 @@ package yuki.android.template.di.component;
 import android.app.Activity;
 
 import dagger.Component;
-import yuki.android.template.data.entity.OrmaDatabase;
+import yuki.android.template.repository.entity.OrmaDatabase;
 import yuki.android.template.di.module.ActivityModule;
 import yuki.android.template.di.scope.ActivityScope;
 import yuki.android.template.domain.usecase.HistoryViewUseCase;

@@ -15,9 +15,9 @@ import android.test.suitebuilder.annotation.MediumTest;
 
 import rx.SingleSubscriber;
 import rx.Subscriber;
-import yuki.android.template.data.executor.TestCurrentThreadExecutor;
-import yuki.android.template.data.repository.HistoryRepositoryImpl;
-import yuki.android.template.data.repository.TestOrmaUtils;
+import yuki.android.template.repository.executor.TestCurrentThreadExecutor;
+import yuki.android.template.repository.repository.HistoryRepositoryImpl;
+import yuki.android.template.repository.repository.TestOrmaUtils;
 import yuki.android.template.di.component.ActivityComponent;
 import yuki.android.template.domain.executor.TestPostCurrentThread;
 import yuki.android.template.domain.usecase.HistoryViewUseCase;

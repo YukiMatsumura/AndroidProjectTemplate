@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import yuki.android.template.data.entity.History;
+import yuki.android.template.repository.entity.History;
 import yuki.android.template.domain.executor.DefaultSingleSubscriber;
 import yuki.android.template.domain.executor.DefaultSubscriber;
 import yuki.android.template.domain.usecase.HistoryViewUseCase;

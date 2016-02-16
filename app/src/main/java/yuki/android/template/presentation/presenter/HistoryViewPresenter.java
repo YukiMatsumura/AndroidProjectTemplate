@@ -3,7 +3,7 @@ package yuki.android.template.presentation.presenter;
 import java.util.List;
 
 import yuki.android.template.crosscut.bus.BusStream;
-import yuki.android.template.data.entity.History;
+import yuki.android.template.repository.entity.History;
 
 public class HistoryViewPresenter {
 

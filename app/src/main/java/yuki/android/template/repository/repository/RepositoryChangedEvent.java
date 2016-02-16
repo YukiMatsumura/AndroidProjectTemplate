@@ -1,4 +1,4 @@
-package yuki.android.template.data.repository;
+package yuki.android.template.repository.repository;
 
 public abstract class RepositoryChangedEvent {
 

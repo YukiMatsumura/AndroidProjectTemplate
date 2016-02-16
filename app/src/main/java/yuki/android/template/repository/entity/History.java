@@ -1,4 +1,4 @@
-package yuki.android.template.data.entity;
+package yuki.android.template.repository.entity;
 
 import com.github.gfx.android.orma.annotation.Column;
 import com.github.gfx.android.orma.annotation.PrimaryKey;

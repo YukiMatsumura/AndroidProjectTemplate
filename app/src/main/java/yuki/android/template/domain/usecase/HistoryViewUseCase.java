@@ -4,7 +4,7 @@ import java.util.List;
 
 import rx.SingleSubscriber;
 import rx.Subscriber;
-import yuki.android.template.data.entity.History;
+import yuki.android.template.repository.entity.History;
 
 public interface HistoryViewUseCase extends UseCase {
 

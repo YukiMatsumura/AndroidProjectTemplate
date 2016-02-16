@@ -4,7 +4,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Single;
-import yuki.android.template.data.entity.History;
+import yuki.android.template.repository.entity.History;
 
 public interface HistoryRepository {
 

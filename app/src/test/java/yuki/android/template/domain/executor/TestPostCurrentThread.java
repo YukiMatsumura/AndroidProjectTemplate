@@ -2,7 +2,7 @@ package yuki.android.template.domain.executor;
 
 import rx.Scheduler;
 import rx.schedulers.Schedulers;
-import yuki.android.template.data.executor.TestCurrentThreadExecutor;
+import yuki.android.template.repository.executor.TestCurrentThreadExecutor;
 
 public class TestPostCurrentThread implements PostExecutionThread {
 

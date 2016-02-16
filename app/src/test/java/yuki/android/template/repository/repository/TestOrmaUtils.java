@@ -1,12 +1,12 @@
-package yuki.android.template.data.repository;
+package yuki.android.template.repository.repository;
 
 import com.github.gfx.android.orma.ModelFactory;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import yuki.android.template.data.entity.History;
-import yuki.android.template.data.entity.OrmaDatabase;
+import yuki.android.template.repository.entity.History;
+import yuki.android.template.repository.entity.OrmaDatabase;
 
 public class TestOrmaUtils {
 

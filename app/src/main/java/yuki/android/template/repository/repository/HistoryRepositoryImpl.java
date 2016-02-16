@@ -1,4 +1,4 @@
-package yuki.android.template.data.repository;
+package yuki.android.template.repository.repository;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import rx.Single;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import yuki.android.template.crosscut.bus.BroadcastBus;
-import yuki.android.template.data.entity.History;
-import yuki.android.template.data.entity.OrmaDatabase;
+import yuki.android.template.repository.entity.History;
+import yuki.android.template.repository.entity.OrmaDatabase;
 import yuki.android.template.domain.repository.HistoryRepository;
 
 public class HistoryRepositoryImpl implements HistoryRepository {

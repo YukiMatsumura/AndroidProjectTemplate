@@ -1,4 +1,4 @@
-package yuki.android.template.data.executor;
+package yuki.android.template.repository.executor;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

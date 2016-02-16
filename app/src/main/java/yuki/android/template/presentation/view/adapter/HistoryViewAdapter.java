@@ -13,7 +13,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import yuki.android.template.R;
-import yuki.android.template.data.entity.History;
+import yuki.android.template.repository.entity.History;
 
 public class HistoryViewAdapter
         extends RecyclerView.Adapter<HistoryViewAdapter.HistoryViewHolder> {

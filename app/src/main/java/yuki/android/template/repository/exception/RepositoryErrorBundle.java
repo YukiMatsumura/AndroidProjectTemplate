@@ -1,4 +1,4 @@
-package yuki.android.template.data.exception;
+package yuki.android.template.repository.exception;
 
 import yuki.android.template.domain.exception.ErrorBundle;
 

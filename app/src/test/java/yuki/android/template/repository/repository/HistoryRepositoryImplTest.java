@@ -1,4 +1,4 @@
-package yuki.android.template.data.repository;
+package yuki.android.template.repository.repository;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,7 +11,7 @@ import org.robolectric.annotation.Config;
 import android.content.Context;
 import android.test.suitebuilder.annotation.MediumTest;
 
-import yuki.android.template.data.entity.OrmaDatabase;
+import yuki.android.template.repository.entity.OrmaDatabase;
 import yuki.android.template.test.CustomRobolectricTestRunner;
 import yuki.android.template.test.DefaultRobolectricRule;
 import yuki.android.template.test.RobolectricConfig;

@@ -1,7 +1,7 @@
 package yuki.android.template.di.component;
 
 import dagger.Component;
-import yuki.android.template.data.entity.OrmaDatabase;
+import yuki.android.template.repository.entity.OrmaDatabase;
 import yuki.android.template.di.module.ApplicationModule;
 import yuki.android.template.di.scope.ApplicationScope;
 import yuki.android.template.domain.executor.PostExecutionThread;

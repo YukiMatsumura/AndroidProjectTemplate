@@ -6,7 +6,7 @@ import rx.SingleSubscriber;
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import yuki.android.template.crosscut.i18n.DateTimeUtils;
-import yuki.android.template.data.entity.History;
+import yuki.android.template.repository.entity.History;
 import yuki.android.template.domain.executor.PostExecutionThread;
 import yuki.android.template.domain.executor.ThreadExecutor;
 import yuki.android.template.domain.repository.HistoryRepository;

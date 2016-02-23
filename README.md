@@ -5,8 +5,6 @@
 Androidプロジェクトで頻繁に使用されるプラグインの導入ソースプログラムをプロジェクト作成の都度書き直すのは非効率的である.  
 そういった繰り返し書かれるプログラムをこのプロジェクトにまとめ, 新規プロジェクト作成の際にはこれをコピーすることで対応できるようにする.  
 
-また, Clean Architectureのソフトウェアプログラムにおいて最低限必要となる雛形もここで定義する.  
-
 ### 導入されるプラグイン
 
 主要な静的解析ツールと各種ユーティリティが導入される.  
@@ -38,15 +36,10 @@ GradleVersion
 : 依存しているライブラリの最新バージョンをチェックするプラグイン.  
 
 
-### Clean Architecture
-
-Robert Cecil Martin氏による[Clean Architecture](https://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html)のアプローチを参考に実装している.  
-
 ### ライブラリ
 
  - RxAndroid
  - RxJava
- - Retrolambda
  - Dagger2
  - ButterKnife
  - Orma
@@ -135,6 +128,19 @@ CheckStyleのコンフィギュレーションファイルは2種類用意され
 
 `checkstyle-easy.xml`は緩い体裁チェックルール. `checkstyle-hard.xml`は厳しい体裁チェックルールとなっている.
 プロジェクトのコーディング規約にあったファイルを`android.gradle`で指定する.
+
+```gradle
+/*
+ * CheckStyle
+ *   see: https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.Checkstyle.html
+ */
+task("checkstyle$variantName", type: Checkstyle,
+        dependsOn: "assemble$variantName") {
+...
+    configFile = rootProject.file('config/checkstyle-easy.xml')
+...
+}
+```
 
 ### Release署名
 

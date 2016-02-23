@@ -4,10 +4,10 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 
 import timber.log.Timber;
+import yuki.android.template.crosscut.di.component.ApplicationComponent;
+import yuki.android.template.crosscut.di.component.DaggerApplicationComponent;
+import yuki.android.template.crosscut.di.module.ApplicationModule;
 import yuki.android.template.crosscut.logger.ReleaseTree;
-import yuki.android.template.di.component.ApplicationComponent;
-import yuki.android.template.di.component.DaggerApplicationComponent;
-import yuki.android.template.di.module.ApplicationModule;
 
 public class App extends Application {
 
@@ -23,9 +23,9 @@ public class App extends Application {
 
         component = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this)).build();
-
-        // TODO: Stetho setup
-        // Stetho.initializeWithDefaults(this);
+//
+//        // TODO: Stetho setup
+//        // Stetho.initializeWithDefaults(this);
     }
 
     @NonNull

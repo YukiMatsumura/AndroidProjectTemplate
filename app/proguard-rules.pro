@@ -64,3 +64,9 @@
 
 # Retrolambda
 -dontwarn java.lang.invoke.*
+
+
+# EventBus
+-keepclassmembers class ** {
+   public void onEvent*(**);
+}

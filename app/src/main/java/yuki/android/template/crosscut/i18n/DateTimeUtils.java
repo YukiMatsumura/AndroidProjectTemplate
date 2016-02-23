@@ -76,16 +76,27 @@ public abstract class DateTimeUtils {
     }
 
     /**
+     * 現在時刻に value で指定された時間を減じたepoch値(UTC)を返す.
+     *
+     * @param field 減じる時間の種別(年, 月, 日). {@link DateTimeField}から指定される.
+     * @param value 減じる時間の量. 1以上である必要がある.
+     * @return baseMilliseconds に value で指定された時間を減じたepoch値(UTC)
+     */
+    public static long before(@IntRange(from = 1) int value, @DateTimeField int field) {
+        return add(now(), value * -1, field);
+    }
+
+    /**
      * baseMilliseconds の時間に value で指定された時間を減じたepoch値(UTC)を返す.
      *
      * @param baseMilliseconds 時間を加える基準時間.
      * @param field            減じる時間の種別(年, 月, 日). {@link DateTimeField}から指定される.
-     * @param value            減じる時間の量. -1以下である必要がある.
+     * @param value            減じる時間の量. 1以上である必要がある.
      * @return baseMilliseconds に value で指定された時間を減じたepoch値(UTC)
      */
-    public static long minus(long baseMilliseconds,
-            @IntRange(to = -1) int value, @DateTimeField int field) {
-        return add(baseMilliseconds, value, field);
+    public static long before(long baseMilliseconds,
+            @IntRange(from = 1) int value, @DateTimeField int field) {
+        return add(baseMilliseconds, value * -1, field);
     }
 
     private static long add(long baseMilliseconds,

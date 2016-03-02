@@ -188,12 +188,20 @@ Debug署名はIDE標準で用意される`debug.keystore`をプロジェクト�
 
 ### AWS Device Farm
 
-AWS Device Farmに対応する場合は`plugin`フォルダに`awsdevicefarm.gradle`のファイル名で設定を
-格納すればよい. 
+AWS Device Farmに対応する場合は`plugin`フォルダに`awsdevicefarm.gradle`のファイル名で設定を格納すればよい.  
 `android.gralde`はこのファイルが存在する場合はAWS Device Farm用のタスクを生成する.  
 AWS Device Farmなどで使用されるIAMユーザのaccess/secretKey情報は`/secret/aws_authentication.gradle`
-を参照し, これを適用する. 
-AWS Device Farmの詳細は`awsdevicefarm.gradle`のヘッダコメントを参照. 
+を参照し, これを適用する.  
+
+```gradle
+authentication {
+    // FIXME: 正しいキー情報に変更すること
+    accessKey "aws-iam-user-accesskey"
+    secretKey "aws-iam-user-secretkey"
+}
+```
+
+AWS Device Farmの詳細は`awsdevicefarm.gradle`のヘッダコメントを参照.  
 
 
 ### コードスタイル設定

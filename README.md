@@ -5,6 +5,7 @@
 Androidプロジェクトで頻繁に使用されるプラグインの導入ソースプログラムをプロジェクト作成の都度書き直すのは非効率的である.  
 そういった繰り返し書かれるプログラムをこのプロジェクトにまとめ, 新規プロジェクト作成の際にはこれをコピーすることで対応できるようにする.  
 
+
 ### 導入されるプラグイン
 
 主要な静的解析ツールと各種ユーティリティが導入される.  
@@ -35,8 +36,11 @@ ApkSize
 GradleVersion  
 : 依存しているライブラリの最新バージョンをチェックするプラグイン.  
 
+AWS Device Farm
+: AWS Device FarmにAPKをアップロードしてテスト実行するプラグイン. 
 
-### ライブラリ
+
+### 開発用ライブラリ
 
  - RxAndroid
  - RxJava
@@ -74,6 +78,15 @@ buildscript {
 
         // check for plugin updates
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.11.3'
+
+        // Generic logger
+        classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
+
+        // RxJava observable logger
+        classpath "com.fernandocejas.frodo:frodo-plugin:0.8.2"
+        
+        // AWS Device Farm
+        classpath 'com.amazonaws:aws-devicefarm-gradle-plugin:1.2'
     }
 }
 ```
@@ -83,6 +96,7 @@ buildscript {
 ```gradle
 apply from: rootProject.file('android.gradle')
 ```
+
 
 ### 追加・変更されるタスク
 
@@ -119,6 +133,10 @@ pullCodeStyleSettings
 checkEnvironmentSettings  
 : 開発環境の設定確認用タスク  
 
+devicefarmUpload
+: AWS Device FarmにAPKをアップロードしてテスト実行する
+
+
 ## コンフィギュレーション
 
 ### CheckStyle
@@ -141,6 +159,7 @@ task("checkstyle$variantName", type: Checkstyle,
 ...
 }
 ```
+
 
 ### Release署名
 
@@ -165,6 +184,17 @@ if (releaseSettingGradleFile.exists()) {
 ```
 
 Debug署名はIDE標準で用意される`debug.keystore`をプロジェクトルートに配置することで利用できる.  
+
+
+### AWS Device Farm
+
+AWS Device Farmに対応する場合は`plugin`フォルダに`awsdevicefarm.gradle`のファイル名で設定を
+格納すればよい. 
+`android.gralde`はこのファイルが存在する場合はAWS Device Farm用のタスクを生成する.  
+AWS Device Farmなどで使用されるIAMユーザのaccess/secretKey情報は`/secret/aws_authentication.gradle`
+を参照し, これを適用する. 
+AWS Device Farmの詳細は`awsdevicefarm.gradle`のヘッダコメントを参照. 
+
 
 ### コードスタイル設定
 

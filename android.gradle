@@ -111,6 +111,24 @@ tasks.withType(Javadoc) {
 }
 
 /*
+ * OS判定用定数の宣言.
+ * 
+ * usage:
+ *   switch(ant.properties.os){
+ *     case 'windows':
+ *       println 'This is windows.'
+ *         break
+ *     case 'unix':
+ *       println 'This is unix.'  // MacOSはUnix
+ *         break
+ *   }
+ */
+def OS_WINDOWS = 'windows'
+def OS_UNIX = 'unix'
+ant.condition(property: "os", value: OS_WINDOWS) { os(family: "windows") }
+ant.condition(property: "os", value: OS_UNIX) { os(family: "unix") }
+
+/*
  * -------------------------------------------------------------------
  *   Androidプロジェクト共通設定
  * -------------------------------------------------------------------
@@ -434,8 +452,15 @@ task pullCodeStyleSettings(type: Exec) {
     group 'Other'
     description "Download and Settings code style."
 
-    workingDir rootProject.rootDir
-    executable "./script/pullCodeStyleSettings.sh"
+    switch (ant.properties.os) {
+        case OS_WINDOWS:
+            println("\n\tDownload CodeStyle Settings Script does not support WINDOWS yet.\n")
+            break;
+        case OS_UNIX:
+            workingDir rootProject.rootDir
+            executable "./script/pullCodeStyleSettings.sh"
+            break;
+    }
 }
 
 // プロジェクトの開発環境をチェックする

@@ -1,0 +1,76 @@
+/*
+
+# AWS Device Farm Gradle Pluginを追加します. 
+
+AWS Device Farm Gradle Plugin: 
+  http://docs.aws.amazon.com/devicefarm/latest/developerguide/aws-device-farm-android-gradle-plugin.html
+Jenkins CIと連携させたい場合はこちら: 
+  http://docs.aws.amazon.com/devicefarm/latest/developerguide/continuous-integration-jenkins-plugin.html
+
+
+## AWS Device Farm Gradle Pluginを始める前に.
+
+このプラグインを使用するには次の条件を満たしている必要があります
+    
+  1. AWS Device Farmのプロジェクトを作成済みであること.
+       https://aws.amazon.com/jp/device-farm/
+
+  2. AWS Device FarmリソースにアクセスできるIAMユーザを作成済みであること.
+       http://docs.aws.amazon.com/devicefarm/latest/developerguide/aws-device-farm-gradle-plugin-generating-iam-user.html
+       対象のIAMユーザにはAWSDeviceFarmGradlePolicyのポリシー設定が必要です.
+
+  3. AWS Device Farm上で実行できるInstrumentation Testがあること.
+       http://docs.aws.amazon.com/devicefarm/latest/developerguide/test-types-intro.html
+       UI Automator, Espresso, Appium, Calabash, Instrumentation. などがサポートされています.
+
+
+## 本Pluginの扱い方
+
+  1. 本ファイル(awsdevicefarm.gradle)はrootProject配下のpluginフォルダに配置してください.
+     pluginフォルダがなければ作成してください. 
+
+  2. devicefarmの基本設定は全てこのファイルに書きます.
+     ただし, authentication情報(accessKeyとsecretKey)は秘匿情報ですので,別途
+     secret/aws_authentication.gradle に記載してください. 
+     (secretフォルダ配下は.gitignoreでgit管理外としている前提です)
+
+  3. 本Pluginを取り込むことでGradle TaskにdevicefarmUploadが追加されます.
+     一通りの設定が終わったら ./gradlew devicefarmUpload でAWS Device Farmを利用できます. 
+  
+  4. AWS Device Farmでのテスト結果はdevicefarmUploadの実行ログに出力される
+       View the INSTRUMENTATION run in the AWS Device Farm Console: ~
+     のURLから確認してください. 
+
+
+## AWS Device Farmの注意点
+
+ - AWS Device Farmの利用はapkのアップロードを伴います.
+ - 本Pluginの使用にあたってはSecretKey情報が必要で, これを秘匿する自己責任が伴います. 
+
+## 参考になるサイト
+
+Qiita - AWS Device Farm Gradle Plugin を導入した
+  http://qiita.com/tatsuhama/items/ca7b8e4dbe2fb5c687c0
+
+ */
+
+apply plugin: 'devicefarm'
+
+devicefarm {
+    // 必須: 作成済みのプロジェクト名を指定する
+    projectName "test" 
+
+    // 任意: テストデバイスリストを指定する
+    devicePool "Top Devices"
+
+    def amazonDeviceFarmGradleFile = rootProject.file('secret/aws_authentication.gradle')
+    if (amazonDeviceFarmGradleFile.exists()) {
+        apply from: amazonDeviceFarmGradleFile, to: devicefarm
+    } else {
+        println "\n\t!! NOT FOUND AMAZON DEVICE FARM AUTHENTICATION SETTING. SIGNING FAKE KEY !!\n"
+        authentication {
+            accessKey "aws-iam-user-accesskey"
+            secretKey "aws-iam-user-secretkey"
+        }
+    }
+}

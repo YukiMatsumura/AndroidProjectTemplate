@@ -7,29 +7,47 @@ apply plugin: 'com.getkeepsafe.dexcount'
 // Android Gradle Known issues: http://tools.android.com/knownissues
 
 /*
- * android.gradleファイルを導入するにあたり, 下記をプロジェクトルートのbuild.gradleに追記すること.
- * 
- * buildscript {
- *     repositories {
- *         ...
- *         maven { url 'https://plugins.gradle.org/m2/' } // official gradle plugins
- *     }
- *     dependencies {
- * 
- *         ...
- * 
- *         // google error-prone
- *         classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.8'
- *
- *         // dex method count
- *         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.3.1'
- *
- *         // apk size
- *         classpath 'com.vanniktech:gradle-android-apk-size-plugin:0.1.2'
- * 
- *         // check for plugin updates
- *         classpath 'com.github.ben-manes:gradle-versions-plugin:0.11.3'
- *     }
+
+## 導入の手引き
+
+android.gradleファイルを導入するには, 下記をプロジェクトルートのbuild.gradleに追記すること.
+
+buildscript {
+    repositories {
+        ...
+        
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+
+        ...
+
+        // google error-prone
+        classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.8'
+
+        // dex method count
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.3.1'
+
+        // apk size
+        classpath 'com.vanniktech:gradle-android-apk-size-plugin:0.1.2'
+
+        // check for plugin updates
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.11.3'
+
+        // AWS Device Farm
+        classpath 'com.amazonaws:aws-devicefarm-gradle-plugin:1.2'
+    }
+}
+
+また, 必要に応じて plugin, script, secret フォルダのファイルも取得する. 
+
+ - secretはgitにコミットされない秘匿情報ファイルが格納される.
+ - pluginはAWS Device Farmなど, optionalなGradle情報が格納される.
+ - scriptはシェルコマンドなどが格納される.
+
+いずれもファイルが存在しなければ無視されるか, 適当な値が設定がなされる.
+
  */
 
 /*
@@ -407,6 +425,14 @@ dependencies {
     pmd 'net.sourceforge.pmd:pmd-java:5.4.1'
 }
 
+def awsDeviceFarmGradleFile = rootProject.file('plugin/awsdevicefarm.gradle')
+if (awsDeviceFarmGradleFile.exists()) {
+    apply from: awsDeviceFarmGradleFile
+    println "AWS Device Farm Gradle applied."
+} else {
+    println "AWS Device Farm Gradle Not Found."
+}
+
 /*
  * -------------------------------------------------------------------
  *   ユーティリティ
@@ -460,4 +486,6 @@ task checkEnvironmentSettings() {
  *           "Total methods in app-dev-debug.apk: XXXX"
  *           "Total fields in app-dev-debug.apk: XXXX"
  *           (and reported to outputs/dexcount/*.txt)
+ *   - AWS Device Farmでテストする
+ *       $ ./gradlew devicefarmUpload
  */

@@ -17,6 +17,7 @@ project.ext {
 buildscript {
     repositories {
         jcenter()
+        mavenLocal()
         mavenCentral()
     }
     dependencies {
@@ -39,6 +40,9 @@ buildscript {
 
         // RxJava observable logger
         classpath "com.fernandocejas.frodo:frodo-plugin:0.8.2"
+        
+        // AWS Device Farm
+        classpath 'com.amazonaws:aws-devicefarm-gradle-plugin:1.2'
     }
 }
 

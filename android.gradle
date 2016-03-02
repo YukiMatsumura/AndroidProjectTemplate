@@ -445,6 +445,17 @@ if (awsDeviceFarmGradleFile.exists()) {
 }
 
 /*
+ * git-secret Plugin apply.
+ */
+def gitSecretGradleFile = rootProject.file('plugin/git_secret.gradle')
+if (gitSecretGradleFile.exists()) {
+    apply from: gitSecretGradleFile
+    println "git-secret Plugin Applied."
+} else {
+    println "git-secret Plugin Not Found."
+}
+
+/*
  * -------------------------------------------------------------------
  *   ユーティリティ
  * -------------------------------------------------------------------
@@ -476,12 +487,5 @@ task checkEnvironmentSettings() {
         println("\n\tYou will need Java 1.8 or higher if you use Orma.")
         println("\tCurrent Java version is really old. Found ver. " + JavaVersion.current() + ".\n")
         throw new GradleException("Please Update your Java.")
-    }
-
-    // gitignoreの簡易チェック
-    String gitignore = file("${rootProject.rootDir}/.gitignore").text
-    if (!gitignore.contains("/secret")) {
-        println("\n\tSecret folder is not registered in .gitignore.\n")
-        throw new GradleException("Please registered /secret path to .gitignore.")
     }
 }

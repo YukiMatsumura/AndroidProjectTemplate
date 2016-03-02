@@ -133,7 +133,7 @@ pullCodeStyleSettings
 checkEnvironmentSettings  
 : 開発環境の設定確認用タスク  
 
-devicefarmUpload
+devicefarmUpload  
 : AWS Device FarmにAPKをアップロードしてテスト実行する
 
 

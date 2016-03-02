@@ -433,12 +433,15 @@ dependencies {
     pmd 'net.sourceforge.pmd:pmd-java:5.4.1'
 }
 
+/*
+ * AWS Device Farm Plugin apply.
+ */
 def awsDeviceFarmGradleFile = rootProject.file('plugin/awsdevicefarm.gradle')
 if (awsDeviceFarmGradleFile.exists()) {
     apply from: awsDeviceFarmGradleFile
-    println "AWS Device Farm Gradle applied."
+    println "AWS Device Farm Gradle Plugin Applied."
 } else {
-    println "AWS Device Farm Gradle Not Found."
+    println "AWS Device Farm Gradle Plugin Not Found."
 }
 
 /*

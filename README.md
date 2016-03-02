@@ -36,7 +36,7 @@ ApkSize
 GradleVersion  
 : 依存しているライブラリの最新バージョンをチェックするプラグイン.  
 
-AWS Device Farm
+AWS Device Farm  
 : AWS Device FarmにAPKをアップロードしてテスト実行するプラグイン. 
 
 

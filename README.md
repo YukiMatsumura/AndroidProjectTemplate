@@ -136,6 +136,12 @@ checkEnvironmentSettings
 devicefarmUpload  
 : AWS Device FarmにAPKをアップロードしてテスト実行する
 
+installGitSecret  
+: `git secret --install`を実行する. 実行するにはgit-secretが必要.  
+
+scanSecretWord  
+: `git secrets --scan`を使ったscanを実行する. 実行するにはgit-secretが必要.  
+
 
 ## コンフィギュレーション
 
@@ -214,6 +220,16 @@ curl -L "https://raw.githubusercontent.com/YukiMatsumura/AndroidProjectTemplate/
 ```
 
 コードスタイルを適用するにはIDEを再起動すること.  
+
+
+### git-secret
+
+[git-secrets](https://github.com/awslabs/git-secrets)を使ったコマンドが追加されている.  
+
+`installGitSecret`はルートディレクトリパスに対して`git-secret`を適用する.  
+`scanSecretWord`はgit管理対象ファイルに秘匿情報が含まれていないかを検査する.  
+CIサーバでscanSecretWordを実行する場合, 秘匿情報として扱うワードを個別に設定すること.  
+(そのワードを公開してしまわないように注意！)  
 
 ## Checkタスク
 

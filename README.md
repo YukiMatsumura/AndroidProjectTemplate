@@ -24,7 +24,7 @@ CheckStyle
 Lint  
 : Androidに特化した潜在的な不具合を検出する静的解析ツール.  
 
-Jacoco
+Jacoco  
 : Javaプログラムのカバレッジレポート.  
 
 DexCount  

@@ -231,6 +231,12 @@ curl -L "https://raw.githubusercontent.com/YukiMatsumura/AndroidProjectTemplate/
 CIサーバでscanSecretWordを実行する場合, 秘匿情報として扱うワードを個別に設定すること.  
 (そのワードを公開してしまわないように注意！)  
 
+git-secretの使用を開始するには下記の準備が必要.  
+
+ 1. `git-secret`をインストール済みであること
+ 2. `/script/gitSecretsScan.sh`を配置済みであること
+ 3. `/plugin/git_secret.gradle`を配置済みであること
+
 ## Checkタスク
 
 FindBugs, PMD, CheckStyle, Jacocoはビルドバリアント毎に定義されたタスクを持つ.  

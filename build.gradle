@@ -10,8 +10,8 @@ project.ext {
     targetSdkVersion = 23
     buildToolsVersion = '23.0.1'
 
-    supportPackageVersion = '23.1.1'
-    testingSupportPackageVersion = '0.4'
+    supportPackageVersion = '23.2.0'
+    testingSupportPackageVersion = '0.5'
 }
 
 buildscript {
@@ -22,7 +22,7 @@ buildscript {
     }
     dependencies {
 
-        classpath 'com.android.tools.build:gradle:2.0.0-beta5'
+        classpath 'com.android.tools.build:gradle:2.1.0-alpha1'
 
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
 

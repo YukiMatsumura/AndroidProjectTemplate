@@ -18,6 +18,21 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        // VectorDrawableをバックポートする設定 for Gradle Plugin 2.0+
+        // http://android-developers.blogspot.com/2016/02/android-support-library-232.html
+        // もしGradle Plugin 1.5以前を使う必要がある場合は下記を設定する
+        //  android {
+        //    defaultConfig {
+        //      // Stops the Gradle plugin’s automatic rasterization of vectors
+        //      generatedDensities = []
+        //    }
+        //    // Flag to tell aapt to keep the attribute ids around
+        //    aaptOptions {
+        //      additionalParameters "--no-version-vectors"
+        //    }
+        // }
+        vectorDrawables.useSupportLibrary = true
     }
     productFlavors {
         // Define separate dev and prod product flavors.

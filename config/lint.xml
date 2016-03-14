@@ -65,6 +65,13 @@
            severity="ignore" />
 
     <!--
+      GradleDependency
+      ライブラリが最新バージョンでなくてもエラーとはしない.
+    -->
+    <issue id="GradleDependency"
+           severity="ignore" />
+
+    <!--
        IntelliJ Bugs
          see: "Element X is not allowed here" error message is no problem.
               https://code.google.com/p/android/issues/detail?id=175741

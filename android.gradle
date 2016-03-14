@@ -468,7 +468,7 @@ task pullCodeStyleSettings(type: Exec) {
 
     switch (ant.properties.os) {
         case OS_WINDOWS:
-            println("\n\tDownload CodeStyle Settings Script does not support WINDOWS yet.\n")
+            println("Download CodeStyle Settings Script does not support WINDOWS yet.")
             break;
         case OS_UNIX:
             workingDir rootProject.rootDir

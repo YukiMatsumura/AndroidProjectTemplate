@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 apply plugin: 'com.jakewharton.hugo'  // generic method io logger
-apply plugin: 'com.fernandocejas.frodo'  // ReactiveX observable logger
 
 apply from: rootProject.file('android.gradle')
 
@@ -11,7 +10,7 @@ android {
     buildToolsVersion = rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "yuki.android.template"
+        applicationId "yuki.m.android.husahusa"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

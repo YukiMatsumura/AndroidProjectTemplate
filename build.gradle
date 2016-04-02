@@ -17,13 +17,13 @@ project.ext {
 buildscript {
     repositories {
         jcenter()
-        mavenLocal()
         mavenCentral()
     }
     dependencies {
 
         classpath 'com.android.tools.build:gradle:2.1.0-alpha1'
 
+        // apt
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
 
         // dex method count
@@ -40,7 +40,7 @@ buildscript {
 
         // RxJava observable logger
         classpath "com.fernandocejas.frodo:frodo-plugin:0.8.2"
-        
+
         // AWS Device Farm
         classpath 'com.amazonaws:aws-devicefarm-gradle-plugin:1.2'
     }

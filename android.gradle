@@ -10,16 +10,10 @@ apply plugin: 'com.getkeepsafe.dexcount'
 
 ## 導入の手引き
 
-android.gradleファイルを導入するには, 下記をプロジェクトルートのbuild.gradleに追記すること. 
-最新の情報は https://goo.gl/k2KaYK を確認すること. 
+android.gradleファイルを導入するには, 下記をプロジェクトルートのbuild.gradleに追記すること.
+最新の情報は https://goo.gl/k2KaYK を確認すること.
 
 buildscript {
-    repositories {
-        ...
-        
-        mavenLocal()
-        mavenCentral()
-    }
     dependencies {
         ...
 
@@ -33,7 +27,7 @@ buildscript {
     }
 }
 
-また, 必要に応じて plugin, script, secret フォルダのファイルも取得する. 
+また, 必要に応じて plugin, script, secret フォルダのファイルも取得する.
 
  - secretはgitにコミットされない秘匿情報ファイルが格納される.
  - pluginはAWS Device Farmなど, optionalなGradle情報が格納される.
@@ -53,7 +47,7 @@ buildscript {
  * Javaコンパイル全般.
  *   より厳格なJavaコンパイルを実行するには各compileArgsのコメントアウトを外す.
  *   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.compile.JavaCompile.html
- * 
+ *
  * Javaコンパイルオプションの設定.
  *   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.compile.CompileOptions.html
  */
@@ -73,7 +67,7 @@ tasks.withType(JavaCompile) {
 /*
  * JUnit(3.8.x or 4.x)の設定.
  *   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.Test.html
- * 
+ *
  * テストFail時のログ出力設定.
  *   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.testing.logging.TestLoggingContainer.html
  */
@@ -84,14 +78,14 @@ tasks.withType(Test) {
         showCauses true           // テストFailの内容は全て出力する
         showExceptions true
         showStackTraces true
-        showStandardStreams true  // テストの結果はStdOutへ出力 
+        showStandardStreams true  // テストの結果はStdOutへ出力
     }
 }
 
 /*
  * Javadocの設定.
  *   see: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Javadoc.html
- *  
+ *
  * Javadocオプション.
  *   see: https://docs.gradle.org/current/javadoc/org/gradle/external/javadoc/StandardJavadocDocletOptions.html
  */
@@ -112,7 +106,7 @@ tasks.withType(Javadoc) {
 
 /*
  * OS判定用定数の宣言.
- * 
+ *
  * usage:
  *   switch(ant.properties.os){
  *     case 'windows':
